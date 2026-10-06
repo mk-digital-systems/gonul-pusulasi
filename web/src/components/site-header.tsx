@@ -30,13 +30,20 @@ export function SiteHeader() {
             ))}
           </ul>
         </nav>
-        <Link
-          href="/#iliski-pusulan"
-          className={`${buttonStyles.primary} whitespace-nowrap px-4 py-2.5 sm:px-5`}
-        >
-          <span className="sm:hidden">Testi Çöz</span>
-          <span className="hidden sm:inline">İlişki Pusulanı Keşfet</span>
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/giris"
+            className={`${buttonStyles.secondary} hidden whitespace-nowrap px-4 py-2.5 sm:inline-flex`}
+          >
+            Giriş yap
+          </Link>
+          <Link
+            href="/kayit"
+            className={`${buttonStyles.primary} whitespace-nowrap px-4 py-2.5 sm:px-5`}
+          >
+            Hesap oluştur
+          </Link>
+        </div>
       </Container>
     </header>
   );

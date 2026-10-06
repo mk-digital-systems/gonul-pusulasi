@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Container, Eyebrow, buttonStyles } from "./ui";
 import brandVisual from "../../public/brand/gonul-pusulasi-gorsel.jpg";
 
@@ -20,15 +21,18 @@ export function Hero() {
             insanlarla tanışman için hazırlanıyor. Daha az aday, daha anlamlı tanışmalar.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a href="#iliski-pusulan" className={buttonStyles.primary}>
-              İlişki Pusulanı Keşfet
-            </a>
-            <a href="#nasil-calisir" className={buttonStyles.secondary}>
-              Nasıl çalışacak?
-            </a>
+            <Link href="/kayit" className={buttonStyles.primary}>
+              Ücretsiz hesap oluştur
+            </Link>
+            <Link href="/giris" className={buttonStyles.secondary}>
+              Giriş yap
+            </Link>
           </div>
           <p className="mt-5 text-sm text-ink-muted">
-            Gönül Pusulası hazırlık aşamasında. Üyelik açıldığında duyurusunu bu sitede yapacağız.
+            Önce kendini daha yakından tanımak istersen{" "}
+            <a href="#iliski-pusulan" className="font-medium text-ember underline underline-offset-4">
+              mini İlişki Pusulan testini çözebilirsin.
+            </a>
           </p>
         </div>
         <div className="overflow-hidden rounded-[2rem] shadow-[0_30px_80px_-40px_rgba(138,61,69,0.6)]">
