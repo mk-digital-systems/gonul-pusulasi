@@ -66,3 +66,53 @@ details > summary::-webkit-details-marker {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* Hukuki sayfalardaki metin düzeni */
+.legal-prose ul,
+.legal-prose ol {
+  padding-left: 1.4rem;
+}
+.legal-prose ul {
+  list-style: disc;
+}
+.legal-prose ol {
+  list-style: lower-alpha;
+}
+.legal-prose li + li {
+  margin-top: 0.5rem;
+}
+.legal-prose li::marker {
+  color: var(--color-ember);
+}
+.legal-prose strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.legal-prose a {
+  color: var(--color-ember);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.legal-prose h3 {
+  margin-top: 1.75rem;
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.legal-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.legal-prose th,
+.legal-prose td {
+  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.legal-prose th {
+  background: var(--color-sand);
+  color: var(--color-ink);
+  font-weight: 600;
+}

@@ -1,20 +1,29 @@
-// Önizleme modunda form verileri hiçbir yere gönderilmez.
-// Gerçek kayıt için ortam değişkeni: NEXT_PUBLIC_PREVIEW_MODE=false
-export const PREVIEW_MODE = process.env.NEXT_PUBLIC_PREVIEW_MODE !== "false";
-
 export const SITE = {
   name: "Gönül Pusulası",
   domain: "gonulpusulasi.tr",
   url: "https://gonulpusulasi.tr",
+  altDomain: "gonulpusulasi.com.tr",
   slogan: "Birini değil, sana uyan birini bul.",
   minAge: 30,
 };
 
-// Ön kayıt: 1930–1996 (üst yaş sınırı yok; 1930 yazım hatalarını ayıklamak için teknik alt değer)
-export const BIRTH_YEAR_MAX = 1996;
-export const BIRTH_YEAR_MIN = 1930;
+// Ziyaretçiye açık kurumsal bilgiler. Gerçek kişi adı yalnızca hukuken zorunlu
+// alanlarda (KVKK veri sorumlusu, 5651 içerik sağlayıcı bilgisi) kullanılır.
+export const ORG = {
+  brand: "MK Digital Systems",
+  location: "Bolu Merkez / Türkiye",
+  email: "iletisim@mk-digitalsystems.com",
+  controller: "Mustafa Öner",
+};
 
-export const BIRTH_YEARS = Array.from(
-  { length: BIRTH_YEAR_MAX - BIRTH_YEAR_MIN + 1 },
-  (_, i) => BIRTH_YEAR_MAX - i,
-);
+export const LEGAL_UPDATED = "6 Ekim 2026";
+
+export const LEGAL_PAGES = [
+  { href: "/kvkk-aydinlatma-metni", title: "KVKK Aydınlatma Metni" },
+  { href: "/gizlilik-politikasi", title: "Gizlilik Politikası" },
+  { href: "/kullanim-kosullari", title: "Kullanım Koşulları" },
+  { href: "/cerez-politikasi", title: "Çerez Politikası" },
+  { href: "/topluluk-kurallari", title: "Topluluk Kuralları" },
+  { href: "/guvenli-tanisma", title: "Güvenli Tanışma" },
+  { href: "/iletisim", title: "İletişim" },
+] as const;

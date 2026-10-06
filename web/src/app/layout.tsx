@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: `${SITE.name} | ${SITE.slogan}`,
   description:
-    "30 yaş ve üzeri, ciddi ilişki arayan kadın ve erkekler için açıklanabilir uyum, güvenlik ve gizlilik odaklı tanışma uygulaması. Erken erişime katıl.",
+    "30 yaş ve üzeri, ciddi ilişki arayan kadın ve erkekler için açıklanabilir uyum, güvenlik ve gizlilik odaklı tanışma uygulaması.",
   openGraph: {
     title: SITE.name,
     description: SITE.slogan,

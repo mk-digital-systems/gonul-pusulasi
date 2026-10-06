@@ -1,15 +1,7 @@
+import Link from "next/link";
 import { CompassMark } from "./compass-mark";
 import { Container } from "./ui";
-import { SITE } from "@/lib/site";
-
-// Hukuki sayfalar avukat incelemesinden sonra eklenecek.
-const LEGAL = [
-  "KVKK Aydınlatma Metni",
-  "Gizlilik Politikası",
-  "Ön Kayıt Koşulları",
-  "Çerez Politikası",
-  "İletişim",
-];
+import { LEGAL_PAGES, ORG, SITE } from "@/lib/site";
 
 export function SiteFooter() {
   return (
@@ -21,17 +13,26 @@ export function SiteFooter() {
             <span className="font-script text-3xl leading-none">{SITE.name}</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-sand/80">{SITE.slogan}</p>
+          <p className="mt-6 text-sm leading-relaxed text-sand/80">
+            {ORG.brand}
+            <br />
+            {ORG.location}
+          </p>
         </div>
-        <ul className="space-y-2.5 text-sm">
-          {LEGAL.map((item) => (
-            <li key={item} className="text-sand/80">
-              {item} <span className="text-xs text-sand/50">(hazırlanıyor)</span>
-            </li>
-          ))}
-        </ul>
+        <nav aria-label="Hukuki bilgiler">
+          <ul className="space-y-2.5 text-sm">
+            {LEGAL_PAGES.map((page) => (
+              <li key={page.href}>
+                <Link href={page.href} className="text-sand/80 transition-colors hover:text-paper">
+                  {page.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </Container>
       <Container className="mt-12 border-t border-paper/10 pt-6 text-xs text-sand/50">
-        © {new Date().getFullYear()} {SITE.name}
+        © {new Date().getFullYear()} {SITE.name} · {ORG.brand}
       </Container>
     </footer>
   );

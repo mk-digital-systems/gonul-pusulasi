@@ -1,20 +1,28 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
 import { Container, SectionHeading } from "./ui";
 
-const FAQ = [
+const link = "font-medium text-ember underline underline-offset-2";
+
+const FAQ: { q: string; a: ReactNode }[] = [
   {
     q: "Gönül Pusulası ne zaman açılacak?",
-    a: "Uygulama hazırlık aşamasında. Kesin tarihi henüz açıklamıyoruz; erken erişim listesindekilere ilk biz haber vereceğiz.",
+    a: "Uygulama hazırlık aşamasında. Kesin tarihi henüz açıklamıyoruz; üyelik açıldığında duyurusunu bu sitede yapacağız.",
+  },
+  {
+    q: "Neden bekleme listesi veya ön kayıt yok?",
+    a: "Uygulama açılmadan senden kişisel bilgi toplamak istemiyoruz. Üyelik açıldığında bekleme listesine gerek kalmadan doğrudan katılabileceksin.",
   },
   {
     q: "Hangi şehirlerde açılacak?",
-    a: "Henüz karar vermedik ve bunu bilinçli olarak yapıyoruz. Erken erişim taleplerini şehir şehir inceleyip, uygulamayı herkesin yeterince uygun adayla karşılaşabileceği yerlerde açacağız.",
+    a: "Açılış şehirlerini henüz açıklamadık. Uygulamayı, herkesin yeterince uygun adayla karşılaşabileceği yerlerde açmayı hedefliyoruz; duyuruyu bu sitede yapacağız.",
   },
   {
-    q: "Kimler katılabilir?",
+    q: "Kimler katılabilecek?",
     a: "30 yaş ve üzeri, ciddi ve uzun vadeli bir ilişki arayan kadın ve erkekler. Üst yaş sınırı yoktur. Gönül Pusulası kadın ve erkek üyeleri birbiriyle tanıştırır.",
   },
   {
-    q: "Neden aynı anda en fazla 3 kişiyle konuşabiliyorum?",
+    q: "Neden aynı anda en fazla 3 kişiyle konuşabileceğim?",
     a: "Çünkü onlarca kişiyle yüzeysel konuşmak yerine birkaç kişiye gerçekten zaman ayırmanın daha anlamlı tanışmalar getirdiğine inanıyoruz. Bu sınır hiçbir ücretli paketle değişmez.",
   },
   {
@@ -31,11 +39,15 @@ const FAQ = [
   },
   {
     q: "Fotoğraf yüklemek zorunlu mu?",
-    a: "Hayır. Fotoğraf ve sesli tanıtım isteğe bağlıdır. Her hesap telefon numarasıyla doğrulanır; yanlış bilgi verenlerin üyeliği kalıcı olarak kapatılır.",
+    a: "Hayır. Fotoğraf ve sesli tanıtım isteğe bağlı olacak. Her hesap telefon numarasıyla doğrulanacak; yanlış bilgi verenlerin üyeliği kalıcı olarak kapatılacak.",
   },
   {
     q: "Uyum nasıl hesaplanıyor?",
     a: "Uyum soruları üzerinden; senin cevapların, karşı tarafta kabul ettiğin cevaplar ve her konunun senin için ne kadar önemli olduğu karşılıklı olarak değerlendirilir. Sonuç “Çok Güçlü”, “Güçlü” veya “İyi Uyum” gibi bantlarla ve gerekçeleriyle gösterilir. Uydurma yüzdeler kullanmıyoruz.",
+  },
+  {
+    q: "Uyum sonucu bir ilişki garantisi mi?",
+    a: "Hayır. Uyum bantları, iki kişinin verdiği cevapların karşılaştırılmasıdır; ilişki veya evlilik garantisi vermez. Gönül Pusulası psikolojik değerlendirme veya profesyonel ilişki danışmanlığı hizmeti değildir.",
   },
   {
     q: "Eski eşim, iş arkadaşım ya da bir tanıdığım beni görebilir mi?",
@@ -46,12 +58,53 @@ const FAQ = [
     a: "Hesap oluşturmak, profilleri ve uyum önerilerini görmek ücretsiz olacak. Mesajlaşma ve tanışma Premium üyelikle mümkün olacak. Güvenlik ve gizlilik özellikleri herkes için her zaman ücretsiz. Fiyatları açılıştan önce açıkça paylaşacağız.",
   },
   {
-    q: "Ön kayıtta neden bu bilgileri istiyorsunuz?",
-    a: "Doğum yılı, cinsiyet, şehir ve ilişki amacı; nerede ve kimler için açılmamız gerektiğini anlamamızı sağlar. E-posta yalnızca kaydını doğrulamak ve açılışta haber vermek içindir. TC kimlik numarası, soyad veya adres istemiyoruz.",
+    q: "Sahte profillerle nasıl mücadele edeceksiniz?",
+    a: (
+      <>
+        Telefon doğrulaması, şüpheli mesajlara karşı uyarılar, şikâyet ve engelleme ile insan
+        moderasyonu. Bu önlemler riski azaltır ama sıfırlamaz; bu yüzden{" "}
+        <Link href="/guvenli-tanisma" className={link}>
+          Güvenli Tanışma
+        </Link>{" "}
+        önerilerini okumanı isteriz. Gönül Pusulası hiçbir zaman kendisi sahte veya bot profil
+        oluşturmaz.
+      </>
+    ),
   },
   {
-    q: "Sahte profillerle nasıl mücadele edeceksiniz?",
-    a: "Telefon doğrulaması, şüpheli mesajlara karşı uyarılar, şikâyet ve engelleme ile insan moderasyonu. Yanlış bilgi verdiği anlaşılan üyenin üyeliği kalıcı olarak kapatılır. Gönül Pusulası hiçbir zaman kendisi sahte veya bot profil oluşturmaz.",
+    q: "Bu site kişisel verilerimi topluyor mu?",
+    a: (
+      <>
+        Bu sitede kayıt formu, çerez, reklam takibi veya ziyaretçi analitiği yok. Siteyi sunan
+        altyapı, sitenin çalışması ve güvenliği için IP adresi gibi teknik bağlantı bilgilerini
+        işler. Ayrıntılar{" "}
+        <Link href="/kvkk-aydinlatma-metni" className={link}>
+          KVKK Aydınlatma Metni
+        </Link>{" "}
+        ve{" "}
+        <Link href="/gizlilik-politikasi" className={link}>
+          Gizlilik Politikası
+        </Link>
+        ’nda.
+      </>
+    ),
+  },
+  {
+    q: "İlişki Pusulan sonuçlarım kaydediliyor mu?",
+    a: "Hayır. Test tamamen tarayıcında çalışır; cevapların ve sonucun bize gönderilmez ve hiçbir yerde saklanmaz.",
+  },
+  {
+    q: "Gönül Pusulası adına mesaj alırsam ne yapmalıyım?",
+    a: (
+      <>
+        Şu anda üye kabul etmiyor, ödeme almıyor ve kişisel bilgi istemiyoruz. Adımıza böyle bir
+        talep alırsan yanıt verme ve{" "}
+        <Link href="/iletisim" className={link}>
+          bize bildir
+        </Link>
+        . Resmi adreslerimiz gonulpusulasi.tr ve gonulpusulasi.com.tr’dir.
+      </>
+    ),
   },
 ];
 

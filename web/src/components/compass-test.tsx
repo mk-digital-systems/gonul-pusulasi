@@ -163,10 +163,11 @@ export function CompassTest() {
                     </p>
                     <div className="mt-9 rounded-2xl border border-ember/30 bg-ember-soft/40 p-6 text-center">
                       <p className="font-display text-xl text-ink">
-                        Sana uygun kişiler Gönül Pusulası’na geldiğinde haber verelim.
+                        Gönül Pusulası’nda uyum, iki tarafın gerçek cevaplarıyla çok daha ayrıntılı
+                        hesaplanacak.
                       </p>
-                      <a href="#erken-erisim" className={`${buttonStyles.primary} mt-5`}>
-                        Erken Erişime Katıl
+                      <a href="#nasil-calisir" className={`${buttonStyles.primary} mt-5`}>
+                        Nasıl çalışacağını gör
                       </a>
                     </div>
                     <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">

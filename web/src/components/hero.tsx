@@ -20,15 +20,15 @@ export function Hero() {
             insanlarla tanışman için hazırlanıyor. Daha az aday, daha anlamlı tanışmalar.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a href="#erken-erisim" className={buttonStyles.primary}>
-              Erken Erişime Katıl
-            </a>
-            <a href="#iliski-pusulan" className={buttonStyles.secondary}>
+            <a href="#iliski-pusulan" className={buttonStyles.primary}>
               İlişki Pusulanı Keşfet
+            </a>
+            <a href="#nasil-calisir" className={buttonStyles.secondary}>
+              Nasıl çalışacak?
             </a>
           </div>
           <p className="mt-5 text-sm text-ink-muted">
-            Uygulama hazırlık aşamasında. Açıldığında ilk haber verdiğimiz kişilerden biri ol.
+            Gönül Pusulası hazırlık aşamasında. Üyelik açıldığında duyurusunu bu sitede yapacağız.
           </p>
         </div>
         <div className="overflow-hidden rounded-[2rem] shadow-[0_30px_80px_-40px_rgba(138,61,69,0.6)]">
