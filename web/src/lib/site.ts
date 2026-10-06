@@ -4,8 +4,8 @@ export const PREVIEW_MODE = process.env.NEXT_PUBLIC_PREVIEW_MODE !== "false";
 
 export const SITE = {
   name: "Gönül Pusulası",
-  domain: "gonulpusulasi.com",
-  url: "https://gonulpusulasi.com",
+  domain: "gonulpusulasi.tr",
+  url: "https://gonulpusulasi.tr",
   slogan: "Birini değil, sana uyan birini bul.",
   minAge: 30,
 };
