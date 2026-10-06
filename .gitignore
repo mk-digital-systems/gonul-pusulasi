@@ -1,0 +1,15 @@
+# Ortam değişkenleri ve gizli anahtarlar
+.env*
+!.env.example
+
+# Bağımlılıklar ve derleme çıktıları (ayrıntılar web/.gitignore içinde)
+node_modules/
+.next/
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# İç planlama belgesi (depoya gönderilmez)
+GELISTIRME.md

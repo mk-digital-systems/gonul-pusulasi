@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-script: var(--font-great-vibes), cursive;
+}
+
+/* Palet logodan türetildi: pudra pembe zemin, gül tonu eller, altın pusula. */
+@theme {
+  --color-paper: #fcf7f5;
+  --color-sand: #f6e9e5;
+  --color-sand-deep: #ebd4ce;
+  --color-ink: #2a2027;
+  --color-ink-soft: #5a4b53;
+  --color-ink-muted: #7a6a72;
+  --color-ember: #a84f57;
+  --color-ember-deep: #8a3d45;
+  --color-ember-soft: #f6e1df;
+  --color-rose: #d0918c;
+  --color-brass: #c99d62;
+  --color-moss: #4f6b5a;
+  --color-night: #2b1f27;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-ember-soft);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
