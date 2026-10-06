@@ -14,6 +14,9 @@ export const ORG = {
   location: "Bolu Merkez / Türkiye",
   email: "iletisim@mk-digitalsystems.com",
   controller: "Mustafa Öner",
+  // Yalnızca hukuken zorunlu bölümlerde gösterilir (KVKK veri sorumlusu, 5651 içerik sağlayıcı)
+  phone: "0545 659 75 51",
+  phoneHref: "tel:+905456597551",
 };
 
 export const LEGAL_UPDATED = "6 Ekim 2026";

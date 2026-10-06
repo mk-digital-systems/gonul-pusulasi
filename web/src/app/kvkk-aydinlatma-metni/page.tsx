@@ -37,7 +37,11 @@ export default function KvkkPage() {
                 <strong>{ORG.controller}</strong>’dir.
               </p>
               <p>
-                İletişim: <a href={`mailto:${ORG.email}`}>{ORG.email}</a> · {ORG.location}
+                Adres: {ORG.location}
+                <br />
+                Telefon: <a href={ORG.phoneHref}>{ORG.phone}</a>
+                <br />
+                E-posta: <a href={`mailto:${ORG.email}`}>{ORG.email}</a>
               </p>
             </>
           ),

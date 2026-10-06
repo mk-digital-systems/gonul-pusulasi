@@ -59,6 +59,10 @@ export default function ContactPage() {
               5651 sayılı Kanun kapsamında içerik sağlayıcı: <strong>{ORG.controller}</strong> (
               {ORG.brand})
               <br />
+              Adres: {ORG.location}
+              <br />
+              Telefon: <a href={ORG.phoneHref}>{ORG.phone}</a>
+              <br />
               E-posta: <a href={`mailto:${ORG.email}`}>{ORG.email}</a>
             </p>
           ),
