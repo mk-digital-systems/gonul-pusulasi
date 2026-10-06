@@ -6,6 +6,7 @@ import { ORG, SITE } from "@/lib/site";
 const PATH = "/gizlilik-politikasi";
 
 export const metadata: Metadata = {
+  alternates: { canonical: PATH },
   title: `Gizlilik Politikası | ${SITE.name}`,
   description:
     "Gönül Pusulası internet sitesinde hangi bilgilerin işlendiğini, neden işlendiğini ve nasıl korunduğunu sade bir dille anlatır.",

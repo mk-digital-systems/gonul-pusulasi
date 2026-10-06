@@ -6,6 +6,7 @@ import { ORG, SITE } from "@/lib/site";
 const PATH = "/cerez-politikasi";
 
 export const metadata: Metadata = {
+  alternates: { canonical: PATH },
   title: `Çerez Politikası | ${SITE.name}`,
   description: "Gönül Pusulası internet sitesi çerez ve benzeri teknolojileri kullanmaz.",
 };

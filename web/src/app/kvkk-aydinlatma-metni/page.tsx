@@ -6,6 +6,7 @@ import { ORG, SITE } from "@/lib/site";
 const PATH = "/kvkk-aydinlatma-metni";
 
 export const metadata: Metadata = {
+  alternates: { canonical: PATH },
   title: `KVKK Aydınlatma Metni | ${SITE.name}`,
   description:
     "Gönül Pusulası internet sitesi ziyaretçileri ve bizimle iletişime geçen kişiler için 6698 sayılı KVKK kapsamında aydınlatma metni.",

@@ -6,6 +6,7 @@ import { ORG, SITE } from "@/lib/site";
 const PATH = "/kullanim-kosullari";
 
 export const metadata: Metadata = {
+  alternates: { canonical: PATH },
   title: `Kullanım Koşulları | ${SITE.name}`,
   description: "Gönül Pusulası internet sitesinin kullanım koşulları.",
 };

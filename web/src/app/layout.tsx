@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     type: "website",
     images: [{ url: "/brand/gonul-pusulasi-gorsel.jpg", width: 1024, height: 715, alt: SITE.name }],
   },
-  // Lansmana kadar arama motorlarına kapalı
-  robots: { index: false, follow: false },
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

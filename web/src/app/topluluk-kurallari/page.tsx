@@ -6,6 +6,7 @@ import { SITE } from "@/lib/site";
 const PATH = "/topluluk-kurallari";
 
 export const metadata: Metadata = {
+  alternates: { canonical: PATH },
   title: `Topluluk Kuralları | ${SITE.name}`,
   description:
     "Gönül Pusulası üyeliği açıldığında tüm üyelerin uyacağı davranış kuralları, şikâyet, engelleme ve moderasyon ilkeleri.",

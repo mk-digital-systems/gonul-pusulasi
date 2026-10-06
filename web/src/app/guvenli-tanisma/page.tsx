@@ -6,6 +6,7 @@ import { SITE } from "@/lib/site";
 const PATH = "/guvenli-tanisma";
 
 export const metadata: Metadata = {
+  alternates: { canonical: PATH },
   title: `Güvenli Tanışma | ${SITE.name}`,
   description:
     "İnternette tanıştığın biriyle yazışırken ve buluşurken kendini korumak için pratik öneriler.",
