@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gönül Pusulası Web
 
-## Getting Started
+Next.js 16 tabanlı tanıtım sitesi ve Faz 1 hesap/onboarding uygulaması.
 
-First, run the development server:
+## Yerel geliştirme
+
+1. `.env.example` dosyasını `.env.local` olarak kopyala.
+2. Mevcut Supabase projesinin Project URL ve publishable key değerlerini gir.
+3. `supabase/migrations/0001_phase1_foundation.sql` migrationını Supabase SQL Editor'da çalıştır.
+4. Supabase Authentication URL ayarlarına şu adresleri ekle:
+   - `http://localhost:3000/auth/callback/signup`
+   - `http://localhost:3000/auth/callback/recovery`
+   - `https://gonulpusulasi.tr/auth/callback/signup`
+   - `https://gonulpusulasi.tr/auth/callback/recovery`
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Gerekli ortam değişkenleri:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Publishable key gizli değildir; yetkilendirme PostgreSQL RLS ile yapılır. Secret veya
+`service_role` anahtarı istemci ortam değişkenlerine eklenmez ve Faz 1 web kodunda kullanılmaz.
 
-## Learn More
+## Kontroller
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Supabase CLI ve Docker bulunan bir ortamda SQL/RLS testleri:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+supabase db reset
+supabase test db
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+SQL Editor kurulum notları için `supabase/README.md` dosyasına bakın.
