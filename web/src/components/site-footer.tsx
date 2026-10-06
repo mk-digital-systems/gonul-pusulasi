@@ -13,11 +13,6 @@ export function SiteFooter() {
             <span className="font-script text-3xl leading-none">{SITE.name}</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-sand/80">{SITE.slogan}</p>
-          <p className="mt-6 text-sm leading-relaxed text-sand/80">
-            {ORG.brand}
-            <br />
-            {ORG.location}
-          </p>
         </div>
         <nav aria-label="Hukuki bilgiler">
           <ul className="space-y-2.5 text-sm">
@@ -31,8 +26,11 @@ export function SiteFooter() {
           </ul>
         </nav>
       </Container>
-      <Container className="mt-12 border-t border-paper/10 pt-6 text-xs text-sand/50">
-        © {new Date().getFullYear()} {SITE.name} · {ORG.brand}
+      <Container className="mt-12 flex flex-col gap-1 border-t border-paper/10 pt-6 text-xs text-sand/50 sm:flex-row sm:justify-between">
+        <span>
+          © {new Date().getFullYear()} {SITE.name}
+        </span>
+        <span>{ORG.brand} tarafından geliştirilmiştir.</span>
       </Container>
     </footer>
   );
