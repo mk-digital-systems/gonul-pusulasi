@@ -4,7 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/user";
 import { createClient } from "@/lib/supabase/server";
-import { conversationMessageSchema } from "@/lib/validation/conversation";
+import {
+  conversationMessageSchema,
+  conversationProgressSchema,
+} from "@/lib/validation/conversation";
 
 function value(formData: FormData, name: string) {
   const item = formData.get(name);
@@ -51,4 +54,37 @@ export async function sendConversationMessageAction(formData: FormData) {
   revalidatePath("/gorusmeler");
   revalidatePath(`/gorusmeler/${parsed.data.conversationId}`);
   redirect(conversationPath(parsed.data.conversationId, "bildirim", "Mesajınız gönderildi."));
+}
+
+export async function confirmConversationProgressAction(formData: FormData) {
+  await requireUser();
+  const parsed = conversationProgressSchema.safeParse({
+    conversationId: value(formData, "conversationId"),
+  });
+
+  if (!parsed.success) {
+    redirect("/gorusmeler?hata=G%C3%B6r%C3%BC%C5%9Fme+bilgisi+ge%C3%A7ersiz.");
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("confirm_conversation_progress", {
+    p_conversation_id: parsed.data.conversationId,
+  });
+
+  if (error) {
+    redirect(conversationPath(
+      parsed.data.conversationId,
+      "hata",
+      "Devam kararınız kaydedilemedi. Görüşmenin süresi dolmuş olabilir.",
+    ));
+  }
+
+  revalidatePath("/kesfet");
+  revalidatePath("/talepler");
+  revalidatePath("/gorusmeler");
+  revalidatePath(`/gorusmeler/${parsed.data.conversationId}`);
+  const notice = data === "active"
+    ? "Karşılıklı onay tamamlandı. Aktif tanışmanız başladı."
+    : "Devam kararınız kaydedildi. Karşı tarafın onayı bekleniyor.";
+  redirect(conversationPath(parsed.data.conversationId, "bildirim", notice));
 }

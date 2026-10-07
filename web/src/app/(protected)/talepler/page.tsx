@@ -95,7 +95,7 @@ export default async function RequestsPage({
 
               {request.status === "accepted" && request.pre_meeting_expires_at ? (
                 <div className="mt-5 rounded-xl border border-moss/25 bg-moss/10 px-4 py-3 text-sm text-moss">
-                  <p>Ön görüşme başladı. Süre sonu: {formatDate(request.pre_meeting_expires_at)}</p>
+                  <p>Başvuru kabul edildi ve görüşme açıldı.</p>
                   {request.conversation_id ? (
                     <Link
                       href={`/gorusmeler/${request.conversation_id}`}

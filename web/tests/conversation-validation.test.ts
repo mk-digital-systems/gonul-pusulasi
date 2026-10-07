@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   conversationIdSchema,
   conversationMessageSchema,
+  conversationProgressSchema,
   MESSAGE_MAX_LENGTH,
 } from "../src/lib/validation/conversation.ts";
 
@@ -11,6 +12,11 @@ const conversationId = "50000000-0000-4000-8000-000000000001";
 test("geçerli görüşme kimliği kabul edilir", () => {
   assert.equal(conversationIdSchema.safeParse(conversationId).success, true);
   assert.equal(conversationIdSchema.safeParse("gecersiz").success, false);
+});
+
+test("devam kararı geçerli görüşme kimliği gerektirir", () => {
+  assert.equal(conversationProgressSchema.safeParse({ conversationId }).success, true);
+  assert.equal(conversationProgressSchema.safeParse({ conversationId: "gecersiz" }).success, false);
 });
 
 test("mesajın başındaki ve sonundaki boşluklar temizlenir", () => {

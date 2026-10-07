@@ -11,7 +11,8 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0003_discovery_rpc_fix.sql`
    - `migrations/0004_phase3_introduction_requests.sql`
    - `migrations/0005_phase3_pre_meeting_messages.sql`
-   Daha önce `0001`–`0004` uygulandıysa yalnızca `0005` dosyasını çalıştır.
+   - `migrations/0006_phase3_mutual_progress.sql`
+   Daha önce `0001`–`0005` uygulandıysa yalnızca `0006` dosyasını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -29,3 +30,5 @@ RLS izolasyonunu ve karşılıklı keşif filtresini doğrular.
 cevaplarını, katılımcı RLS sınırlarını ve kabulde 96 saatlik ön görüşme açılmasını doğrular.
 `tests/database/0005_phase3_pre_meeting_messages.test.sql` mesaj tablosunun varsayılan
 kapalı yetkilerini, katılımcı izolasyonunu ve 96 saat sonunda mesaj gönderiminin kapanmasını doğrular.
+`tests/database/0006_phase3_mutual_progress.test.sql` karşılıklı devam onayını, aktif
+tanışma geçişini, diğer görüşmelerin kapanmasını ve aktif kullanıcının yeni görüşmeden korunmasını doğrular.

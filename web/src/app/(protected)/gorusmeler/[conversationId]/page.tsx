@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { sendConversationMessageAction } from "@/app/actions/conversations";
+import {
+  confirmConversationProgressAction,
+  sendConversationMessageAction,
+} from "@/app/actions/conversations";
 import { MessageBanner, TextArea } from "@/components/form-controls";
 import { buttonStyles } from "@/components/ui";
 import { getConversation } from "@/lib/data/conversations";
@@ -34,8 +37,10 @@ export default async function ConversationPage({
   const conversation = await getConversation(conversationId);
   if (!conversation) notFound();
 
-  const { details, messages } = conversation;
-  const isOpen = details.conversation_status === "pre_meeting";
+  const { details, messages, progress } = conversation;
+  const canMessage = details.conversation_status === "pre_meeting"
+    || details.conversation_status === "active";
+  const isActive = details.conversation_status === "active";
 
   return (
     <section>
@@ -46,20 +51,22 @@ export default async function ConversationPage({
       <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember">
-            96 saatlik ön görüşme
+            {isActive ? "Aktif tanışma" : "96 saatlik ön görüşme"}
           </p>
           <h1 className="mt-3 font-display text-4xl text-ink">{details.other_display_name}</h1>
         </div>
         <span className={`rounded-full px-4 py-2 text-xs font-semibold ${
-          isOpen ? "bg-moss/10 text-moss" : "bg-sand text-ink-muted"
+          canMessage ? "bg-moss/10 text-moss" : "bg-sand text-ink-muted"
         }`}>
-          {isOpen ? "Ön görüşme açık" : "Görüşme sona erdi"}
+          {isActive ? "Karşılıklı devam" : canMessage ? "Ön görüşme açık" : "Görüşme sona erdi"}
         </span>
       </div>
 
-      <p className="mt-4 text-sm text-ink-muted">
-        Süre sonu: {formatDate(details.pre_meeting_expires_at)}
-      </p>
+      {!isActive ? (
+        <p className="mt-4 text-sm text-ink-muted">
+          Süre sonu: {formatDate(details.pre_meeting_expires_at)}
+        </p>
+      ) : null}
       <p className="mt-3 rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink-soft">
         Güvenliğin için telefon, adres, iş yeri veya ödeme bilgisi paylaşma. Okundu bilgisi ve
         çevrimiçi durum gösterilmez.
@@ -72,7 +79,7 @@ export default async function ConversationPage({
       <div className="mt-6 space-y-3 rounded-[2rem] border border-ink/10 bg-paper p-4 sm:p-6">
         {messages.length === 0 ? (
           <p className="py-8 text-center text-sm text-ink-muted">
-            {isOpen ? "Henüz mesaj yok. İlk mesajı nazik ve sade tutabilirsin." : "Bu görüşme mesajlaşmaya kapalı."}
+            {canMessage ? "Henüz mesaj yok. İlk mesajı nazik ve sade tutabilirsin." : "Bu görüşme mesajlaşmaya kapalı."}
           </p>
         ) : (
           messages.map((message) => {
@@ -93,7 +100,29 @@ export default async function ConversationPage({
         )}
       </div>
 
-      {isOpen ? (
+      {details.conversation_status === "pre_meeting" && progress ? (
+        <div className="mt-5 rounded-[2rem] border border-moss/20 bg-moss/10 p-5 sm:p-6">
+          <h2 className="font-display text-2xl text-ink">Tanışmaya devam etmek ister misin?</h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+            Aktif tanışma yalnızca iki taraf da açıkça onayladığında başlar. O zaman diğer
+            açık görüşmeler kapanır ve keşif yeni adaylara durur.
+          </p>
+          {progress.my_confirmed ? (
+            <p className="mt-4 text-sm font-semibold text-moss">
+              Kararın kaydedildi. Karşı tarafın onayı bekleniyor.
+            </p>
+          ) : (
+            <form action={confirmConversationProgressAction} className="mt-4">
+              <input type="hidden" name="conversationId" value={details.conversation_id} />
+              <button type="submit" className={buttonStyles.primary}>
+                Tanışmaya devam etmek istiyorum
+              </button>
+            </form>
+          )}
+        </div>
+      ) : null}
+
+      {canMessage ? (
         <form action={sendConversationMessageAction} className="mt-5 rounded-[2rem] border border-ink/10 bg-paper p-5 sm:p-6">
           <input type="hidden" name="conversationId" value={details.conversation_id} />
           <label className="block text-sm font-medium text-ink">
@@ -113,7 +142,7 @@ export default async function ConversationPage({
         </form>
       ) : null}
 
-      {isOpen ? (
+      {canMessage ? (
         <div className="mt-4 text-center">
           <Link href={`/gorusmeler/${details.conversation_id}`} className="text-sm font-semibold text-ink-soft hover:text-ink">
             Yeni mesajları kontrol et

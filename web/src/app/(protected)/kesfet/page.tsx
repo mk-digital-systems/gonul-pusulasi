@@ -6,6 +6,7 @@ import {
   getDiscoveryCandidates,
   getMyCompatibilityState,
 } from "@/lib/data/compatibility";
+import { getMyConversations } from "@/lib/data/conversations";
 import { getMyDoorQuestionSettings } from "@/lib/data/introductions";
 import { getMyAccountAndProfile } from "@/lib/data/profile";
 
@@ -14,10 +15,11 @@ export default async function DiscoveryPage({
 }: {
   searchParams: Promise<{ hata?: string; bildirim?: string }>;
 }) {
-  const [accountData, state, doorQuestions, { hata, bildirim }] = await Promise.all([
+  const [accountData, state, doorQuestions, conversations, { hata, bildirim }] = await Promise.all([
     getMyAccountAndProfile(),
     getMyCompatibilityState(),
     getMyDoorQuestionSettings(),
+    getMyConversations(),
     searchParams,
   ]);
 
@@ -25,7 +27,10 @@ export default async function DiscoveryPage({
   if (accountData.account.status !== "active") redirect("/hesabim");
 
   const doorQuestionsReady = doorQuestions.selectedCodes.length === 3;
-  const discovery = state.completedAt && doorQuestionsReady
+  const activeConversation = conversations.find(
+    (conversation) => conversation.conversation_status === "active",
+  );
+  const discovery = state.completedAt && doorQuestionsReady && !activeConversation
     ? await getDiscoveryCandidates(10)
     : { candidates: [], errorCode: null };
   const { candidates } = discovery;
@@ -67,6 +72,20 @@ export default async function DiscoveryPage({
           </p>
           <Link href="/kapi-sorularim" className={`${buttonStyles.primary} mt-6`}>
             Kapı sorularımı seç
+          </Link>
+        </div>
+      ) : activeConversation ? (
+        <div className="mt-8 rounded-[2rem] border border-moss/25 bg-paper p-8 text-center">
+          <h2 className="font-display text-2xl text-ink">Aktif tanışmana odaklan</h2>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-soft">
+            {activeConversation.other_display_name} ile karşılıklı devam kararı verdiniz.
+            Aktif tanışma sürerken yeni aday gösterilmez.
+          </p>
+          <Link
+            href={`/gorusmeler/${activeConversation.conversation_id}`}
+            className={`${buttonStyles.primary} mt-6`}
+          >
+            Görüşmeye dön
           </Link>
         </div>
       ) : discovery.errorCode ? (

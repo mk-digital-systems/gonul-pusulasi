@@ -35,6 +35,13 @@ export type ConversationMessage = {
   created_at: string;
 };
 
+export type ConversationProgress = {
+  conversation_id: string;
+  conversation_status: ConversationStatus;
+  my_confirmed: boolean;
+  mutual_confirmed: boolean;
+};
+
 export async function getMyConversations() {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_my_conversations");
@@ -59,17 +66,23 @@ export async function getConversation(conversationId: string) {
   const details = (detailsResult.data?.[0] ?? null) as ConversationDetails | null;
   if (!details) return null;
 
-  const messagesResult = await supabase.rpc("get_conversation_messages", {
-    p_conversation_id: conversationId,
-    p_limit: 100,
-  });
+  const [messagesResult, progressResult] = await Promise.all([
+    supabase.rpc("get_conversation_messages", {
+      p_conversation_id: conversationId,
+      p_limit: 100,
+    }),
+    supabase.rpc("get_conversation_progress", {
+      p_conversation_id: conversationId,
+    }),
+  ]);
 
-  if (messagesResult.error) {
-    throw new Error("Görüşme mesajları yüklenemedi.");
+  if (messagesResult.error || progressResult.error) {
+    throw new Error("Görüşme mesajları veya devam durumu yüklenemedi.");
   }
 
   return {
     details,
     messages: (messagesResult.data ?? []) as ConversationMessage[],
+    progress: (progressResult.data?.[0] ?? null) as ConversationProgress | null,
   };
 }
