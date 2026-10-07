@@ -16,7 +16,9 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0008_phase3_pair_history_limits.sql`
    - `migrations/0009_phase3_active_inactivity.sql`
    - `migrations/0010_phase4_user_safety.sql`
-   Daha önce `0001`–`0009` uygulandıysa yalnızca `0010` dosyasını çalıştır.
+   - `migrations/0011_phase4_moderation_console.sql`
+   - `migrations/0012_phase4_report_context.sql`
+   Daha önce `0001`–`0010` uygulandıysa sırayla `0011` ve `0012` dosyalarını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -46,3 +48,18 @@ hatırlatmasını, beş günlük sessizlik sonlandırmasını, katılımcı yetk
 kaydını doğrular.
 `tests/database/0010_phase4_user_safety.test.sql` engelleme ve şikâyet RLS sınırlarını,
 engellenen çiftin keşif/başvuru/görüşme/mesaj kilitlerini ve denetim kayıtlarını doğrular.
+`tests/database/0011_phase4_moderation_console.test.sql` personel rol ayrımını, kapalı tablo
+yetkilerini, şikâyet kuyruğunu, yalnızca admin tarafından uygulanan manuel askıya alma/geri
+açma akışını ve değiştirilemez işlem kayıtlarını doğrular.
+`tests/database/0012_phase4_report_context.test.sql` şikâyete bağlı kapı cevaplarının yalnızca
+moderasyon personeline açılmasını, normal kullanıcı erişiminin reddedilmesini ve RPC'nin özel
+görüşme mesajı alanı yayınlamamasını doğrular.
+
+## İlk admin
+
+`0011_phase4_moderation_console.sql`, Supabase Auth kullanıcısı mevcutsa
+`68192831-8e6b-4256-adb1-bc606d7af308` UUID'li hesabı `admin` olarak etkinleştirir.
+Migration çalıştıktan sonra bu hesapla yeniden giriş yapın; uygulama menüsünde **Yönetim**
+bağlantısı görünür. Admin ve moderatör yetkileri yalnızca veritabanındaki
+`moderation_staff` kaydı ve oturumdaki `auth.uid()` eşleşmesiyle verilir; istemciye secret
+veya `service_role` anahtarı gönderilmez.

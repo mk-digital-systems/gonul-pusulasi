@@ -4,8 +4,9 @@ import { CompassMark } from "./compass-mark";
 import { Container, buttonStyles } from "./ui";
 import { signOutAction } from "@/app/actions/auth";
 import { SITE } from "@/lib/site";
+import type { StaffRole } from "@/lib/data/moderation";
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, staffRole }: { children: ReactNode; staffRole: StaffRole | null }) {
   return (
     <>
       <header className="border-b border-ink/10 bg-paper">
@@ -33,6 +34,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link href="/profil" className="font-medium text-ink-soft hover:text-ink">
               Profili düzenle
             </Link>
+            {staffRole ? (
+              <Link href="/yonetim/sikayetler" className="font-medium text-ember-deep hover:text-ember">
+                Yönetim
+              </Link>
+            ) : null}
             <form action={signOutAction}>
               <button className={`${buttonStyles.secondary} px-4 py-2`} type="submit">
                 Çıkış
