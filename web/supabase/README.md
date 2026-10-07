@@ -12,7 +12,8 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0004_phase3_introduction_requests.sql`
    - `migrations/0005_phase3_pre_meeting_messages.sql`
    - `migrations/0006_phase3_mutual_progress.sql`
-   Daha önce `0001`–`0005` uygulandıysa yalnızca `0006` dosyasını çalıştır.
+   - `migrations/0007_phase3_lifecycle_and_cooldown.sql`
+   Daha önce `0001`–`0006` uygulandıysa yalnızca `0007` dosyasını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -32,3 +33,5 @@ cevaplarını, katılımcı RLS sınırlarını ve kabulde 96 saatlik ön görü
 kapalı yetkilerini, katılımcı izolasyonunu ve 96 saat sonunda mesaj gönderiminin kapanmasını doğrular.
 `tests/database/0006_phase3_mutual_progress.test.sql` karşılıklı devam onayını, aktif
 tanışma geçişini, diğer görüşmelerin kapanmasını ve aktif kullanıcının yeni görüşmeden korunmasını doğrular.
+`tests/database/0007_phase3_lifecycle_and_cooldown.test.sql` 96+24 saatlik yaşam döngüsünü,
+kontrollü sonlandırmayı, 24 saatlik beklemeyi ve bu sırada başvuru/görüşme kilitlerini doğrular.

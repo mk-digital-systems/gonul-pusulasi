@@ -6,20 +6,29 @@ import {
   getDiscoveryCandidates,
   getMyCompatibilityState,
 } from "@/lib/data/compatibility";
-import { getMyConversations } from "@/lib/data/conversations";
+import { getMyConversations, getMyMatchCooldown } from "@/lib/data/conversations";
 import { getMyDoorQuestionSettings } from "@/lib/data/introductions";
 import { getMyAccountAndProfile } from "@/lib/data/profile";
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("tr-TR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/Istanbul",
+  }).format(new Date(value));
+}
 
 export default async function DiscoveryPage({
   searchParams,
 }: {
   searchParams: Promise<{ hata?: string; bildirim?: string }>;
 }) {
-  const [accountData, state, doorQuestions, conversations, { hata, bildirim }] = await Promise.all([
+  const [accountData, state, doorQuestions, conversations, cooldown, { hata, bildirim }] = await Promise.all([
     getMyAccountAndProfile(),
     getMyCompatibilityState(),
     getMyDoorQuestionSettings(),
     getMyConversations(),
+    getMyMatchCooldown(),
     searchParams,
   ]);
 
@@ -30,7 +39,7 @@ export default async function DiscoveryPage({
   const activeConversation = conversations.find(
     (conversation) => conversation.conversation_status === "active",
   );
-  const discovery = state.completedAt && doorQuestionsReady && !activeConversation
+  const discovery = state.completedAt && doorQuestionsReady && !activeConversation && !cooldown
     ? await getDiscoveryCandidates(10)
     : { candidates: [], errorCode: null };
   const { candidates } = discovery;
@@ -86,6 +95,17 @@ export default async function DiscoveryPage({
             className={`${buttonStyles.primary} mt-6`}
           >
             Görüşmeye dön
+          </Link>
+        </div>
+      ) : cooldown ? (
+        <div className="mt-8 rounded-[2rem] border border-brass/30 bg-paper p-8 text-center">
+          <h2 className="font-display text-2xl text-ink">Kısa bir bekleme süresindesin</h2>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-soft">
+            Aktif tanışma sonlandıktan sonra yeni adaylar 24 saat boyunca gösterilmez.
+            Bekleme sonu: {formatDate(cooldown.ends_at)}.
+          </p>
+          <Link href="/gorusmeler" className={`${buttonStyles.secondary} mt-6`}>
+            Görüşmelerime dön
           </Link>
         </div>
       ) : discovery.errorCode ? (

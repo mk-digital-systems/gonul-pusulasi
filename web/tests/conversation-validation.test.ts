@@ -4,6 +4,7 @@ import {
   conversationIdSchema,
   conversationMessageSchema,
   conversationProgressSchema,
+  endActiveConversationSchema,
   MESSAGE_MAX_LENGTH,
 } from "../src/lib/validation/conversation.ts";
 
@@ -17,6 +18,11 @@ test("geçerli görüşme kimliği kabul edilir", () => {
 test("devam kararı geçerli görüşme kimliği gerektirir", () => {
   assert.equal(conversationProgressSchema.safeParse({ conversationId }).success, true);
   assert.equal(conversationProgressSchema.safeParse({ conversationId: "gecersiz" }).success, false);
+});
+
+test("aktif tanışma sonlandırma isteği geçerli görüşme kimliği gerektirir", () => {
+  assert.equal(endActiveConversationSchema.safeParse({ conversationId }).success, true);
+  assert.equal(endActiveConversationSchema.safeParse({ conversationId: "gecersiz" }).success, false);
 });
 
 test("mesajın başındaki ve sonundaki boşluklar temizlenir", () => {

@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(17);
+select plan(19);
 
 select has_table('public', 'compatibility_question_sets', 'uyum soru setleri tablosu var');
 select has_table('public', 'compatibility_questions', 'uyum sorulari tablosu var');
@@ -47,6 +47,10 @@ select lives_ok(
   $test$,
   'birinci kullanici uyum cevaplarini kaydeder'
 );
+select lives_ok(
+  $$select public.save_my_door_questions(array['meaningful_weekend', 'communication_expectation', 'conflict_repair'])$$,
+  'birinci kullanici uc kapi sorusu secer'
+);
 
 select is((select count(*)::integer from public.compatibility_answers), 18, 'RLS kendi 18 cevabini gosterir');
 
@@ -71,6 +75,10 @@ select lives_ok(
     ))
   $test$,
   'ikinci kullanici uyum cevaplarini kaydeder'
+);
+select lives_ok(
+  $$select public.save_my_door_questions(array['feeling_safe', 'future_picture', 'support_style'])$$,
+  'ikinci kullanici uc kapi sorusu secer'
 );
 
 select is(

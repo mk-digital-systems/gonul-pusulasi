@@ -8,6 +8,8 @@ export const conversationProgressSchema = z.object({
   conversationId: conversationIdSchema,
 });
 
+export const endActiveConversationSchema = conversationProgressSchema;
+
 export const conversationMessageSchema = z.object({
   conversationId: conversationIdSchema,
   body: z

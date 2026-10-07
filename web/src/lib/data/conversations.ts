@@ -2,7 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 
-export type ConversationStatus = "pre_meeting" | "active" | "ended";
+export type ConversationStatus = "pre_meeting" | "decision_window" | "active" | "ended";
 
 export type ConversationSummary = {
   conversation_id: string;
@@ -41,6 +41,24 @@ export type ConversationProgress = {
   my_confirmed: boolean;
   mutual_confirmed: boolean;
 };
+
+export type MatchCooldown = {
+  conversation_id: string;
+  starts_at: string;
+  ends_at: string;
+  reason: "active_match_ended";
+};
+
+export async function getMyMatchCooldown() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_my_match_cooldown");
+
+  if (error) {
+    throw new Error("Tanışma bekleme durumu yüklenemedi. 0007 migrationını kontrol edin.");
+  }
+
+  return (data?.[0] ?? null) as MatchCooldown | null;
+}
 
 export async function getMyConversations() {
   const supabase = await createClient();

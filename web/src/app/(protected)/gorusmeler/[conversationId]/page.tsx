@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import {
   confirmConversationProgressAction,
+  endActiveConversationAction,
   sendConversationMessageAction,
 } from "@/app/actions/conversations";
 import { MessageBanner, TextArea } from "@/components/form-controls";
@@ -16,6 +17,10 @@ function formatDate(value: string) {
     timeStyle: "short",
     timeZone: "Europe/Istanbul",
   }).format(new Date(value));
+}
+
+function addHours(value: string, hours: number) {
+  return new Date(new Date(value).getTime() + hours * 3_600_000).toISOString();
 }
 
 export default async function ConversationPage({
@@ -41,6 +46,8 @@ export default async function ConversationPage({
   const canMessage = details.conversation_status === "pre_meeting"
     || details.conversation_status === "active";
   const isActive = details.conversation_status === "active";
+  const isDecisionWindow = details.conversation_status === "decision_window";
+  const canConfirm = details.conversation_status === "pre_meeting" || isDecisionWindow;
 
   return (
     <section>
@@ -51,20 +58,31 @@ export default async function ConversationPage({
       <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember">
-            {isActive ? "Aktif tanışma" : "96 saatlik ön görüşme"}
+            {isActive ? "Aktif tanışma" : isDecisionWindow ? "24 saatlik karar penceresi" : "96 saatlik ön görüşme"}
           </p>
           <h1 className="mt-3 font-display text-4xl text-ink">{details.other_display_name}</h1>
         </div>
         <span className={`rounded-full px-4 py-2 text-xs font-semibold ${
           canMessage ? "bg-moss/10 text-moss" : "bg-sand text-ink-muted"
         }`}>
-          {isActive ? "Karşılıklı devam" : canMessage ? "Ön görüşme açık" : "Görüşme sona erdi"}
+          {isActive
+            ? "Karşılıklı devam"
+            : isDecisionWindow
+              ? "Mesajlaşma dondu"
+              : canMessage
+                ? "Ön görüşme açık"
+                : "Görüşme sona erdi"}
         </span>
       </div>
 
-      {!isActive ? (
+      {!isActive && !isDecisionWindow ? (
         <p className="mt-4 text-sm text-ink-muted">
           Süre sonu: {formatDate(details.pre_meeting_expires_at)}
+        </p>
+      ) : null}
+      {isDecisionWindow ? (
+        <p className="mt-4 rounded-xl border border-brass/30 bg-brass/10 px-4 py-3 text-sm leading-relaxed text-ink-soft">
+          Mesajlaşma süresi tamamlandı. Devam kararı için son zaman: {formatDate(addHours(details.pre_meeting_expires_at, 24))}.
         </p>
       ) : null}
       <p className="mt-3 rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink-soft">
@@ -100,7 +118,7 @@ export default async function ConversationPage({
         )}
       </div>
 
-      {details.conversation_status === "pre_meeting" && progress ? (
+      {canConfirm && progress ? (
         <div className="mt-5 rounded-[2rem] border border-moss/20 bg-moss/10 p-5 sm:p-6">
           <h2 className="font-display text-2xl text-ink">Tanışmaya devam etmek ister misin?</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -120,6 +138,24 @@ export default async function ConversationPage({
             </form>
           )}
         </div>
+      ) : null}
+
+      {isActive ? (
+        <details className="mt-5 rounded-[2rem] border border-ember/20 bg-paper p-5 sm:p-6">
+          <summary className="cursor-pointer text-sm font-semibold text-ember-deep">
+            Aktif tanışmayı sonlandır
+          </summary>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            Bu işlem görüşmeyi iki taraf için kapatır. Ardından iki hesap için 24 saatlik
+            yeni aday bekleme süresi başlar.
+          </p>
+          <form action={endActiveConversationAction} className="mt-4">
+            <input type="hidden" name="conversationId" value={details.conversation_id} />
+            <button type="submit" className={buttonStyles.secondary}>
+              Sonlandırmayı onayla
+            </button>
+          </form>
+        </details>
       ) : null}
 
       {canMessage ? (

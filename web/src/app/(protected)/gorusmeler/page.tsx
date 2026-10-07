@@ -7,6 +7,7 @@ import { getMyAccountAndProfile } from "@/lib/data/profile";
 
 const STATUS_LABELS = {
   pre_meeting: "Ön görüşme açık",
+  decision_window: "Karar penceresi",
   active: "Aktif tanışma",
   ended: "Sona erdi",
 } as const;
@@ -17,6 +18,10 @@ function formatDate(value: string) {
     timeStyle: "short",
     timeZone: "Europe/Istanbul",
   }).format(new Date(value));
+}
+
+function addHours(value: string, hours: number) {
+  return new Date(new Date(value).getTime() + hours * 3_600_000).toISOString();
 }
 
 export default async function ConversationsPage({
@@ -86,7 +91,11 @@ export default async function ConversationsPage({
               ) : null}
 
               <p className="mt-4 text-xs text-ink-muted">
-                Ön görüşme sonu: {formatDate(conversation.pre_meeting_expires_at)}
+                {conversation.conversation_status === "decision_window"
+                  ? `Karar penceresi sonu: ${formatDate(addHours(conversation.pre_meeting_expires_at, 24))}`
+                  : conversation.conversation_status === "active"
+                    ? "Karşılıklı devam kararı verildi."
+                    : `Ön görüşme sonu: ${formatDate(conversation.pre_meeting_expires_at)}`}
               </p>
               <Link
                 href={`/gorusmeler/${conversation.conversation_id}`}

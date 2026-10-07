@@ -145,7 +145,8 @@ select throws_ok(
 reset role;
 update public.conversations
 set started_at = now() - interval '5 days',
-    pre_meeting_expires_at = now() - interval '1 day'
+    pre_meeting_expires_at = now() - interval '1 day',
+    decision_expires_at = now() - interval '1 minute'
 where id = '50000000-0000-4000-8000-000000000031';
 
 set local role authenticated;
@@ -155,7 +156,7 @@ select lives_ok($$select public.get_my_conversations()$$, 'sure sonu gorusme lis
 select is(
   (select conversation_status from public.get_conversation_details('50000000-0000-4000-8000-000000000031')),
   'ended',
-  '96 saat dolan gorusme sona erer'
+  '96 arti 24 saat dolan gorusme sona erer'
 );
 select is(
   (select count(*)::integer from public.get_conversation_messages('50000000-0000-4000-8000-000000000031', 100)),
@@ -165,7 +166,7 @@ select is(
 select throws_ok(
   $$select public.send_conversation_message('50000000-0000-4000-8000-000000000031', 'Süre dolduktan sonra gönderilmemeli.')$$,
   '55000',
-  'Ön görüşme mesajlaşmaya kapalı.',
+  'Görüşme mesajlaşmaya kapalı.',
   'sure dolunca yeni mesaj reddedilir'
 );
 
