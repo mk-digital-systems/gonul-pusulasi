@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/user";
 import { createClient } from "@/lib/supabase/server";
 import {
+  manageStaffSchema,
   resolveReportSchema,
   restoreAccountSchema,
   reviewReportSchema,
@@ -18,6 +19,10 @@ function value(formData: FormData, name: string) {
 
 function message(kind: "hata" | "bildirim", text: string) {
   return `/yonetim/sikayetler?${kind}=${encodeURIComponent(text)}`;
+}
+
+function staffMessage(kind: "hata" | "bildirim", text: string) {
+  return `/yonetim/ekip?${kind}=${encodeURIComponent(text)}`;
 }
 
 export async function startReportReviewAction(formData: FormData) {
@@ -122,4 +127,32 @@ export async function restoreSuspendedUserAction(formData: FormData) {
   revalidatePath("/kesfet");
   revalidatePath("/yonetim/sikayetler");
   redirect(message("bildirim", "Askıdaki hesap önceki durumuna geri açıldı."));
+}
+
+export async function manageModerationStaffAction(formData: FormData) {
+  await requireUser();
+  const parsed = manageStaffSchema.safeParse({
+    userId: value(formData, "userId"),
+    role: value(formData, "role"),
+    isActive: value(formData, "isActive"),
+  });
+
+  if (!parsed.success) {
+    redirect(staffMessage("hata", parsed.error.issues[0]?.message ?? "Personel bilgilerini kontrol edin."));
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("manage_moderation_staff", {
+    p_user_id: parsed.data.userId,
+    p_role: parsed.data.role,
+    p_is_active: parsed.data.isActive,
+  });
+
+  if (error) {
+    redirect(staffMessage("hata", "Personel yetkisi güncellenemedi. UUID, hesap durumu ve admin sınırlarını kontrol edin."));
+  }
+
+  revalidatePath("/yonetim/ekip");
+  revalidatePath("/yonetim/sikayetler");
+  redirect(staffMessage("bildirim", "Moderasyon personeli güncellendi."));
 }

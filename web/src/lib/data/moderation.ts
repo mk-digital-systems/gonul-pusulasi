@@ -61,6 +61,31 @@ export type ModerationReportContext = {
   }>;
 };
 
+export type ModerationActionLogItem = {
+  action_id: string;
+  staff_user_id: string | null;
+  staff_display_name: string | null;
+  target_user_id: string | null;
+  target_display_name: string | null;
+  report_id: string | null;
+  action: "account_suspended" | "account_restored";
+  previous_status: string;
+  new_status: string;
+  reason: string;
+  created_at: string;
+};
+
+export type ModerationStaffMember = {
+  user_id: string;
+  display_name: string | null;
+  role: StaffRole;
+  is_active: boolean;
+  created_by_user_id: string | null;
+  created_by_display_name: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export async function getMyStaffRole() {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_my_staff_role");
@@ -138,4 +163,28 @@ export async function getModerationReportContext(
       }];
     }),
   };
+}
+
+export async function getModerationActionLog() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_moderation_action_log", {
+    p_limit: 100,
+  });
+
+  if (error) {
+    throw new Error("Moderasyon denetim geçmişi yüklenemedi. 0013 migrationını ve admin rolünü kontrol edin.");
+  }
+
+  return (data ?? []) as ModerationActionLogItem[];
+}
+
+export async function getModerationStaff() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_moderation_staff");
+
+  if (error) {
+    throw new Error("Moderasyon ekibi yüklenemedi. 0014 migrationını ve admin rolünü kontrol edin.");
+  }
+
+  return (data ?? []) as ModerationStaffMember[];
 }

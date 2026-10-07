@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   moderationQueueFilterSchema,
+  manageStaffSchema,
   resolveReportSchema,
   restoreAccountSchema,
   reviewReportSchema,
@@ -54,4 +55,20 @@ test("geri açma geçerli kullanıcı ve gerekçe gerektirir", () => {
     reason: "İtiraz incelemesi sonucunda hesap geri açıldı.",
   }).success, true);
   assert.equal(restoreAccountSchema.safeParse({ targetUserId: "x", reason: "yetersiz" }).success, false);
+});
+
+test("personel yönetimi UUID, rol ve etkinlik durumunu doğrular", () => {
+  const parsed = manageStaffSchema.safeParse({
+    userId: targetUserId,
+    role: "moderator",
+    isActive: "true",
+  });
+
+  assert.equal(parsed.success, true);
+  if (parsed.success) assert.equal(parsed.data.isActive, true);
+  assert.equal(manageStaffSchema.safeParse({
+    userId: "gecersiz",
+    role: "owner",
+    isActive: "yes",
+  }).success, false);
 });

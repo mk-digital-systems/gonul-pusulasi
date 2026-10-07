@@ -68,6 +68,17 @@ export default async function ModerationReportsPage({
         <MessageBanner error={hata} notice={bildirim} />
       </div>
 
+      {staffRole === "admin" ? (
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/yonetim/islemler" className={buttonStyles.secondary}>
+            Moderasyon işlem geçmişi
+          </Link>
+          <Link href="/yonetim/ekip" className={buttonStyles.secondary}>
+            Moderasyon ekibi
+          </Link>
+        </div>
+      ) : null}
+
       <nav className="mt-6 flex flex-wrap gap-2" aria-label="Şikâyet durumu filtresi">
         {[
           ["pending", "Bekleyen"],

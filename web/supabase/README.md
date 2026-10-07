@@ -18,7 +18,9 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0010_phase4_user_safety.sql`
    - `migrations/0011_phase4_moderation_console.sql`
    - `migrations/0012_phase4_report_context.sql`
-   Daha önce `0001`–`0010` uygulandıysa sırayla `0011` ve `0012` dosyalarını çalıştır.
+   - `migrations/0013_phase4_moderation_audit_log.sql`
+   - `migrations/0014_phase4_moderation_staff_management.sql`
+   Daha önce `0001`–`0010` uygulandıysa sırayla `0011`, `0012`, `0013` ve `0014` dosyalarını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -54,6 +56,12 @@ açma akışını ve değiştirilemez işlem kayıtlarını doğrular.
 `tests/database/0012_phase4_report_context.test.sql` şikâyete bağlı kapı cevaplarının yalnızca
 moderasyon personeline açılmasını, normal kullanıcı erişiminin reddedilmesini ve RPC'nin özel
 görüşme mesajı alanı yayınlamamasını doğrular.
+`tests/database/0013_phase4_moderation_audit_log.test.sql` yaptırım geçmişinin yalnızca admin
+tarafından okunmasını, moderatör ve normal kullanıcı erişiminin reddedilmesini, sıralama ve
+limit davranışını doğrular.
+`tests/database/0014_phase4_moderation_staff_management.test.sql` ekip listesinin ve rol
+yönetiminin yalnızca admine açık olmasını, Auth UUID doğrulamasını, adminin kendini kilitleme
+korumasını, pasifleştirmeyi ve denetim olaylarını doğrular.
 
 ## İlk admin
 
