@@ -8,7 +8,8 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
 2. Migration dosyalarını numara sırasıyla çalıştır:
    - `migrations/0001_phase1_foundation.sql`
    - `migrations/0002_phase2_compatibility.sql`
-   Daha önce `0001` uygulandıysa yalnızca `0002` dosyasını çalıştır.
+   - `migrations/0003_discovery_rpc_fix.sql`
+   Daha önce `0001` ve `0002` uygulandıysa yalnızca `0003` dosyasını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda

@@ -6,7 +6,7 @@ Next.js 16 tabanlı tanıtım sitesi; Faz 1 hesap/onboarding ve Faz 2 uyum/keşi
 
 1. `.env.example` dosyasını `.env.local` olarak kopyala.
 2. Mevcut Supabase projesinin Project URL ve publishable key değerlerini gir.
-3. `supabase/migrations/0001_phase1_foundation.sql` ve ardından `supabase/migrations/0002_phase2_compatibility.sql` migrationlarını Supabase SQL Editor'da sırayla çalıştır.
+3. `supabase/migrations/0001_phase1_foundation.sql`, `supabase/migrations/0002_phase2_compatibility.sql` ve `supabase/migrations/0003_discovery_rpc_fix.sql` migrationlarını Supabase SQL Editor'da sırayla çalıştır.
 4. Supabase Authentication URL ayarlarına şu adresleri ekle:
    - `http://localhost:3000/auth/callback/signup`
    - `http://localhost:3000/auth/callback/recovery`
