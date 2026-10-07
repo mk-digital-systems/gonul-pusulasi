@@ -40,6 +40,11 @@ export type DiscoveryCandidate = {
   shared_points: string[];
 };
 
+export type DiscoveryCandidatesResult = {
+  candidates: DiscoveryCandidate[];
+  errorCode: string | null;
+};
+
 export async function getCompatibilityQuestionnaire() {
   const supabase = await createClient();
   const setResult = await supabase
@@ -144,15 +149,30 @@ export async function getMyCompatibilityState() {
   };
 }
 
-export async function getDiscoveryCandidates(limit = 10) {
+export async function getDiscoveryCandidates(
+  limit = 10,
+): Promise<DiscoveryCandidatesResult> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_my_discovery_candidates", {
     p_limit: limit,
   });
 
   if (error) {
-    throw new Error("Adaylar yüklenemedi. Uyum profilinizi ve Faz 2 migrationını kontrol edin.");
+    console.error("Discovery candidates RPC failed", {
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+      message: error.message,
+    });
+
+    return {
+      candidates: [],
+      errorCode: error.code || "UNKNOWN",
+    };
   }
 
-  return (data ?? []) as DiscoveryCandidate[];
+  return {
+    candidates: (data ?? []) as DiscoveryCandidate[],
+    errorCode: null,
+  };
 }

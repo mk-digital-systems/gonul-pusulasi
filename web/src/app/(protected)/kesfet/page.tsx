@@ -22,7 +22,10 @@ export default async function DiscoveryPage({
   if (!accountData.account.onboarding_completed_at) redirect("/onboarding");
   if (accountData.account.status !== "active") redirect("/hesabim");
 
-  const candidates = state.completedAt ? await getDiscoveryCandidates(10) : [];
+  const discovery = state.completedAt
+    ? await getDiscoveryCandidates(10)
+    : { candidates: [], errorCode: null };
+  const { candidates } = discovery;
 
   return (
     <section>
@@ -51,6 +54,28 @@ export default async function DiscoveryPage({
           <Link href="/uyum" className={`${buttonStyles.primary} mt-6`}>
             Uyum sorularına başla
           </Link>
+        </div>
+      ) : discovery.errorCode ? (
+        <div className="mt-8 rounded-[2rem] border border-ember/25 bg-paper p-8 text-center">
+          <h2 className="font-display text-2xl text-ink">
+            Adaylar şu anda yüklenemedi
+          </h2>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-soft">
+            Uyum profilin kayıtlı. Aday listesini oluştururken geçici bir sunucu
+            hatası oluştu. Sayfayı yeniden deneyebilir veya cevaplarını gözden
+            geçirebilirsin.
+          </p>
+          <p className="mt-3 text-xs text-ink-muted">
+            Teknik hata kodu: {discovery.errorCode}
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link href="/kesfet" className={buttonStyles.primary}>
+              Yeniden dene
+            </Link>
+            <Link href="/uyum" className={buttonStyles.secondary}>
+              Uyum cevaplarımı gözden geçir
+            </Link>
+          </div>
         </div>
       ) : candidates.length === 0 ? (
         <div className="mt-8 rounded-[2rem] border border-ink/10 bg-paper p-8 text-center">
