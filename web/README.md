@@ -6,7 +6,7 @@ Next.js 16 tabanlı tanıtım sitesi; Faz 1 hesap/onboarding, Faz 2 uyum/keşif,
 
 1. `.env.example` dosyasını `.env.local` olarak kopyala.
 2. Mevcut Supabase projesinin Project URL ve publishable key değerlerini gir.
-3. `supabase/migrations/0001_phase1_foundation.sql`–`0014_phase4_moderation_staff_management.sql` migrationlarını numara sırasıyla Supabase SQL Editor'da çalıştır.
+3. `supabase/migrations/0001_phase1_foundation.sql`–`0016_phase4_fixed_admin_and_staff_separation.sql` migrationlarını numara sırasıyla Supabase SQL Editor'da çalıştır.
 4. Supabase Authentication URL ayarlarına şu adresleri ekle:
    - `http://localhost:3000/auth/callback/signup`
    - `http://localhost:3000/auth/callback/recovery`
@@ -24,10 +24,12 @@ Gerekli ortam değişkenleri:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SUPABASE_SECRET_KEY=
 ```
 
-Publishable key gizli değildir; yetkilendirme PostgreSQL RLS ile yapılır. Secret veya
-`service_role` anahtarı istemci ortam değişkenlerine eklenmez ve Faz 1 web kodunda kullanılmaz.
+Publishable key gizli değildir; yetkilendirme PostgreSQL RLS ile yapılır.
+`SUPABASE_SECRET_KEY`, private profil fotoğrafı Storage işlemleri için yalnızca sunucu
+ortamına eklenir. `NEXT_PUBLIC_` öneki verilmez, tarayıcı koduna aktarılmaz ve Git'e yazılmaz.
 
 ## Kontroller
 

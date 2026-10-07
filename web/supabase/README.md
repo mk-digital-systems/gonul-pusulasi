@@ -20,7 +20,9 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0012_phase4_report_context.sql`
    - `migrations/0013_phase4_moderation_audit_log.sql`
    - `migrations/0014_phase4_moderation_staff_management.sql`
-   Daha önce `0001`–`0010` uygulandıysa sırayla `0011`, `0012`, `0013` ve `0014` dosyalarını çalıştır.
+   - `migrations/0015_phase4_profile_photos.sql`
+   - `migrations/0016_phase4_fixed_admin_and_staff_separation.sql`
+   Daha önce `0001`–`0014` uygulandıysa sırayla `0015` ve `0016` dosyalarını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -62,12 +64,28 @@ limit davranışını doğrular.
 `tests/database/0014_phase4_moderation_staff_management.test.sql` ekip listesinin ve rol
 yönetiminin yalnızca admine açık olmasını, Auth UUID doğrulamasını, adminin kendini kilitleme
 korumasını, pasifleştirmeyi ve denetim olaylarını doğrular.
+`tests/database/0015_phase4_profile_photos.test.sql` private bucket ayarlarını, kapalı tablo
+yazma yetkilerini, fotoğraf sahibi/personel/aday erişim sınırlarını ve manuel onay-red
+akışını doğrular.
+`tests/database/0016_phase4_fixed_admin_and_staff_separation.test.sql` sabit admin kimliğini,
+yalnızca admin tarafından moderatör atanmasını, normal üye/personel ayrımını ve personelin
+Keşfet akışından çıkarılmasını doğrular.
 
 ## İlk admin
 
-`0011_phase4_moderation_console.sql`, Supabase Auth kullanıcısı mevcutsa
-`68192831-8e6b-4256-adb1-bc606d7af308` UUID'li hesabı `admin` olarak etkinleştirir.
+`0016_phase4_fixed_admin_and_staff_separation.sql`, Supabase Auth kullanıcısı mevcutsa
+`ae6db6cf-7852-4fef-9fa0-fba3a6afac55` UUID'li hesabı tek ve sabit `admin` olarak etkinleştirir.
 Migration çalıştıktan sonra bu hesapla yeniden giriş yapın; uygulama menüsünde **Yönetim**
-bağlantısı görünür. Admin ve moderatör yetkileri yalnızca veritabanındaki
+alanı görünür. Admin ve moderatörler üye/Keşfet akışına katılamaz. Moderatör
+yalnızca admin tarafından, onboarding'i tamamlanmamış ayrı bir Auth hesabına atanabilir.
+Yetkiler yalnızca veritabanındaki
 `moderation_staff` kaydı ve oturumdaki `auth.uid()` eşleşmesiyle verilir; istemciye secret
 veya `service_role` anahtarı gönderilmez.
+
+## Profil fotoğrafı Storage ayarı
+
+`0015` migrationı private `profile-photos` bucketını oluşturur. Tarayıcıya doğrudan
+`storage.objects` policy'si verilmez; yükleme ve indirme yetki denetimli sunucu akışından yapılır.
+Vercel ve `.env.local` içine Supabase Dashboard → **Project Settings → API Keys** bölümündeki
+server-only `sb_secret_...` değerini `SUPABASE_SECRET_KEY` adıyla ekleyin. Bu değişkeni
+`NEXT_PUBLIC_` adıyla oluşturmayın.

@@ -32,6 +32,11 @@ test("fotoğraf reddi açıklayıcı gerekçe gerektirir", () => {
   }).success, true);
   assert.equal(moderateProfilePhotoSchema.safeParse({
     userId,
+    status: "approved",
+    note: "kısa",
+  }).success, false);
+  assert.equal(moderateProfilePhotoSchema.safeParse({
+    userId,
     status: "rejected",
     note: "kısa",
   }).success, false);

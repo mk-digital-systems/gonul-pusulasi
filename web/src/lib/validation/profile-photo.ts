@@ -31,7 +31,15 @@ export const moderateProfilePhotoSchema = z
     note: z.string().trim().max(1000, "Moderasyon notu en fazla 1000 karakter olabilir."),
   })
   .superRefine((value, context) => {
-    if (value.status === "rejected" && value.note.length < 10) {
+    if (value.note.length > 0 && value.note.length < 10) {
+      context.addIssue({
+        code: "custom",
+        path: ["note"],
+        message: "Moderasyon notu en az 10 karakter olmalıdır.",
+      });
+    }
+
+    if (value.status === "rejected" && value.note.length === 0) {
       context.addIssue({
         code: "custom",
         path: ["note"],

@@ -11,6 +11,7 @@ import {
   reviewReportSchema,
   suspendAccountSchema,
 } from "@/lib/validation/moderation";
+import { moderateProfilePhotoSchema } from "@/lib/validation/profile-photo";
 
 function value(formData: FormData, name: string) {
   const item = formData.get(name);
@@ -23,6 +24,10 @@ function message(kind: "hata" | "bildirim", text: string) {
 
 function staffMessage(kind: "hata" | "bildirim", text: string) {
   return `/yonetim/ekip?${kind}=${encodeURIComponent(text)}`;
+}
+
+function photoMessage(kind: "hata" | "bildirim", text: string) {
+  return `/yonetim/fotograflar?${kind}=${encodeURIComponent(text)}`;
 }
 
 export async function startReportReviewAction(formData: FormData) {
@@ -155,4 +160,37 @@ export async function manageModerationStaffAction(formData: FormData) {
   revalidatePath("/yonetim/ekip");
   revalidatePath("/yonetim/sikayetler");
   redirect(staffMessage("bildirim", "Moderasyon personeli güncellendi."));
+}
+
+export async function moderateProfilePhotoAction(formData: FormData) {
+  await requireUser();
+  const parsed = moderateProfilePhotoSchema.safeParse({
+    userId: value(formData, "userId"),
+    status: value(formData, "status"),
+    note: value(formData, "note"),
+  });
+
+  if (!parsed.success) {
+    redirect(photoMessage("hata", parsed.error.issues[0]?.message ?? "Fotoğraf kararını kontrol edin."));
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("moderate_profile_photo", {
+    p_user_id: parsed.data.userId,
+    p_status: parsed.data.status,
+    p_moderation_note: parsed.data.note || null,
+  });
+
+  if (error) {
+    redirect(photoMessage("hata", "Fotoğraf kararı kaydedilemedi. Yetki ve fotoğraf durumunu kontrol edin."));
+  }
+
+  revalidatePath("/yonetim/fotograflar");
+  revalidatePath("/kesfet");
+  revalidatePath("/profil");
+  revalidatePath(`/api/profil-fotografi/${parsed.data.userId}`);
+  redirect(photoMessage(
+    "bildirim",
+    parsed.data.status === "approved" ? "Profil fotoğrafı onaylandı." : "Profil fotoğrafı reddedildi.",
+  ));
 }

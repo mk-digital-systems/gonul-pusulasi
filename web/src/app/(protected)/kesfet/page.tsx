@@ -9,6 +9,7 @@ import {
 import { getMyConversations, getMyMatchCooldown } from "@/lib/data/conversations";
 import { getMyDoorQuestionSettings } from "@/lib/data/introductions";
 import { getMyAccountAndProfile } from "@/lib/data/profile";
+import { getVisibleProfilePhotoUserIds } from "@/lib/data/profile-photos";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("tr-TR", {
@@ -43,6 +44,9 @@ export default async function DiscoveryPage({
     ? await getDiscoveryCandidates(10)
     : { candidates: [], errorCode: null };
   const { candidates } = discovery;
+  const visiblePhotoUserIds = await getVisibleProfilePhotoUserIds(
+    candidates.map((candidate) => candidate.user_id),
+  );
 
   return (
     <section>
@@ -149,7 +153,19 @@ export default async function DiscoveryPage({
               className="rounded-[2rem] border border-ink/10 bg-paper p-6 sm:p-8"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
+                <div className="flex items-start gap-4">
+                  {visiblePhotoUserIds.has(candidate.user_id) ? (
+                    // Private fotoğraflar yetki denetimli Route Handler üzerinden sunulur.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={`/api/profil-fotografi/${candidate.user_id}`}
+                      alt={`${candidate.display_name} profil fotoğrafı`}
+                      width={112}
+                      height={112}
+                      className="h-24 w-24 shrink-0 rounded-3xl object-cover sm:h-28 sm:w-28"
+                    />
+                  ) : null}
+                  <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-moss">
                     {candidate.compatibility_band}
                   </p>
@@ -159,9 +175,10 @@ export default async function DiscoveryPage({
                   <p className="mt-1 text-sm text-ink-muted">
                     {candidate.city_name} · {candidate.relationship_goal}
                   </p>
+                  </div>
                 </div>
                 <span className="rounded-full bg-sand px-4 py-2 text-xs font-semibold text-ink-soft">
-                  Fotoğraf isteğe bağlı
+                  {visiblePhotoUserIds.has(candidate.user_id) ? "Onaylı fotoğraf" : "Fotoğraf isteğe bağlı"}
                 </span>
               </div>
 

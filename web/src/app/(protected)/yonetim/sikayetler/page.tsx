@@ -68,8 +68,14 @@ export default async function ModerationReportsPage({
         <MessageBanner error={hata} notice={bildirim} />
       </div>
 
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link href="/yonetim/fotograflar" className={buttonStyles.secondary}>
+          Fotoğraf moderasyonu
+        </Link>
+      </div>
+
       {staffRole === "admin" ? (
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-3 flex flex-wrap gap-3">
           <Link href="/yonetim/islemler" className={buttonStyles.secondary}>
             Moderasyon işlem geçmişi
           </Link>

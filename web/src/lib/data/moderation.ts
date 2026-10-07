@@ -86,6 +86,20 @@ export type ModerationStaffMember = {
   updated_at: string;
 };
 
+export type ModerationProfilePhoto = {
+  user_id: string;
+  display_name: string | null;
+  object_path: string;
+  byte_size: number;
+  width: number;
+  height: number;
+  photo_status: "pending" | "approved" | "rejected";
+  uploaded_at: string;
+  reviewed_at: string | null;
+  reviewed_by_user_id: string | null;
+  moderation_note: string | null;
+};
+
 export async function getMyStaffRole() {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_my_staff_role");
@@ -187,4 +201,20 @@ export async function getModerationStaff() {
   }
 
   return (data ?? []) as ModerationStaffMember[];
+}
+
+export async function getModerationProfilePhotos(
+  status: ModerationProfilePhoto["photo_status"] | null,
+) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_moderation_profile_photos", {
+    p_status: status,
+    p_limit: 100,
+  });
+
+  if (error) {
+    throw new Error("Profil fotoğrafı moderasyon kuyruğu yüklenemedi. 0015 migrationını ve personel rolünü kontrol edin.");
+  }
+
+  return (data ?? []) as ModerationProfilePhoto[];
 }
