@@ -21,6 +21,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link href="/uyum" className="font-medium text-ink-soft hover:text-ink">
               İlişki Pusulan
             </Link>
+            <Link href="/kapi-sorularim" className="font-medium text-ink-soft hover:text-ink">
+              Kapı sorularım
+            </Link>
+            <Link href="/talepler" className="font-medium text-ink-soft hover:text-ink">
+              Başvurular
+            </Link>
             <Link href="/profil" className="font-medium text-ink-soft hover:text-ink">
               Profili düzenle
             </Link>

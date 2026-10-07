@@ -1,4 +1,4 @@
-# Supabase Faz 1–2
+# Supabase Faz 1–3
 
 Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulanır.
 
@@ -9,7 +9,8 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0001_phase1_foundation.sql`
    - `migrations/0002_phase2_compatibility.sql`
    - `migrations/0003_discovery_rpc_fix.sql`
-   Daha önce `0001` ve `0002` uygulandıysa yalnızca `0003` dosyasını çalıştır.
+   - `migrations/0004_phase3_introduction_requests.sql`
+   Daha önce `0001`–`0003` uygulandıysa yalnızca `0004` dosyasını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -23,3 +24,5 @@ supabase test db
 doğum tarihi kilidi, kesin yaş aralığı ve RLS izolasyonunu doğrular.
 `tests/database/0002_phase2_compatibility.test.sql` ise soru setini, cevap kaydını,
 RLS izolasyonunu ve karşılıklı keşif filtresini doğrular.
+`tests/database/0004_phase3_introduction_requests.test.sql` kapı sorularını, başvuru
+cevaplarını, katılımcı RLS sınırlarını ve kabulde 96 saatlik ön görüşme açılmasını doğrular.

@@ -18,6 +18,9 @@ export const config = {
     "/profil/:path*",
     "/uyum/:path*",
     "/kesfet/:path*",
+    "/kapi-sorularim/:path*",
+    "/tanisma-talebi/:path*",
+    "/talepler/:path*",
     "/auth/:path*",
   ],
 };

@@ -1,4 +1,9 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type {
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 
 const controlClass =
   "mt-2 w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-ink shadow-sm outline-none transition focus:border-ember focus:ring-2 focus:ring-ember/15";
@@ -27,6 +32,10 @@ export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
 
 export function SelectInput(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...props} className={`${controlClass} ${props.className ?? ""}`} />;
+}
+
+export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return <textarea {...props} className={`${controlClass} ${props.className ?? ""}`} />;
 }
 
 export function MessageBanner({

@@ -6,6 +6,7 @@ import {
   getDiscoveryCandidates,
   getMyCompatibilityState,
 } from "@/lib/data/compatibility";
+import { getMyDoorQuestionSettings } from "@/lib/data/introductions";
 import { getMyAccountAndProfile } from "@/lib/data/profile";
 
 export default async function DiscoveryPage({
@@ -13,16 +14,18 @@ export default async function DiscoveryPage({
 }: {
   searchParams: Promise<{ hata?: string; bildirim?: string }>;
 }) {
-  const [accountData, state, { hata, bildirim }] = await Promise.all([
+  const [accountData, state, doorQuestions, { hata, bildirim }] = await Promise.all([
     getMyAccountAndProfile(),
     getMyCompatibilityState(),
+    getMyDoorQuestionSettings(),
     searchParams,
   ]);
 
   if (!accountData.account.onboarding_completed_at) redirect("/onboarding");
   if (accountData.account.status !== "active") redirect("/hesabim");
 
-  const discovery = state.completedAt
+  const doorQuestionsReady = doorQuestions.selectedCodes.length === 3;
+  const discovery = state.completedAt && doorQuestionsReady
     ? await getDiscoveryCandidates(10)
     : { candidates: [], errorCode: null };
   const { candidates } = discovery;
@@ -53,6 +56,17 @@ export default async function DiscoveryPage({
           </p>
           <Link href="/uyum" className={`${buttonStyles.primary} mt-6`}>
             Uyum sorularına başla
+          </Link>
+        </div>
+      ) : !doorQuestionsReady ? (
+        <div className="mt-8 rounded-[2rem] border border-ink/10 bg-paper p-8 text-center">
+          <h2 className="font-display text-2xl text-ink">Önce 3 kapı sorunu seç</h2>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-soft">
+            Sen birine başvurmadan önce, sana başvuracak kişilerin yanıtlayacağı
+            üç soruyu belirle.
+          </p>
+          <Link href="/kapi-sorularim" className={`${buttonStyles.primary} mt-6`}>
+            Kapı sorularımı seç
           </Link>
         </div>
       ) : discovery.errorCode ? (
@@ -126,9 +140,17 @@ export default async function DiscoveryPage({
                 </div>
               ) : null}
 
-              <p className="mt-6 border-t border-ink/10 pt-4 text-xs leading-relaxed text-ink-muted">
-                Tanışma başvurusu ve kapı soruları Faz 3’te etkinleştirilecek.
-              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-5">
+                <p className="text-xs leading-relaxed text-ink-muted">
+                  Başvuru 48 saat içinde yanıtlanır.
+                </p>
+                <Link
+                  href={`/tanisma-talebi/${candidate.user_id}`}
+                  className={buttonStyles.primary}
+                >
+                  Tanışma başvurusu gönder
+                </Link>
+              </div>
             </article>
           ))}
         </div>
