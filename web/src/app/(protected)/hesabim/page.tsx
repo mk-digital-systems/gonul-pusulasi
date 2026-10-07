@@ -67,6 +67,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <Link href="/uyum" className={buttonStyles.primary}>İlişki Pusulanı doldur</Link>
           ) : null}
           <Link href="/profil" className={buttonStyles.secondary}>Profili düzenle</Link>
+          <Link href="/engellenenler" className={buttonStyles.secondary}>Engellediklerim</Link>
           {account.status === "active" ? (
             <form action={pauseAccountAction}><button type="submit" className={buttonStyles.secondary}>Hesabı duraklat</button></form>
           ) : (

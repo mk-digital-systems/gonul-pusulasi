@@ -6,11 +6,13 @@ import {
   endInactiveConversationAction,
   sendConversationMessageAction,
 } from "@/app/actions/conversations";
-import { MessageBanner, TextArea } from "@/components/form-controls";
+import { blockUserAction, reportUserAction } from "@/app/actions/safety";
+import { FormField, MessageBanner, SelectInput, TextArea } from "@/components/form-controls";
 import { buttonStyles } from "@/components/ui";
 import { getConversation } from "@/lib/data/conversations";
 import { getMyAccountAndProfile } from "@/lib/data/profile";
 import { conversationIdSchema, MESSAGE_MAX_LENGTH } from "@/lib/validation/conversation";
+import { REPORT_CATEGORY_OPTIONS } from "@/lib/validation/safety";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("tr-TR", {
@@ -187,6 +189,54 @@ export default async function ConversationPage({
           </form>
         </details>
       ) : null}
+
+      <details className="mt-5 rounded-[2rem] border border-ink/10 bg-paper p-5 sm:p-6">
+        <summary className="cursor-pointer text-sm font-semibold text-ink-soft">
+          Güvenlik ve şikâyet seçenekleri
+        </summary>
+        <div className="mt-5 space-y-6">
+          <form action={reportUserAction} className="space-y-4">
+            <input type="hidden" name="targetUserId" value={details.other_user_id} />
+            <input type="hidden" name="conversationId" value={details.conversation_id} />
+            <h2 className="font-display text-2xl text-ink">Şikâyet oluştur</h2>
+            <p className="text-sm leading-relaxed text-ink-soft">
+              Kayıt inceleme kuyruğuna alınır. Şikâyet tek başına otomatik ceza oluşturmaz.
+            </p>
+            <FormField label="Şikâyet nedeni">
+              <SelectInput name="category" required defaultValue="">
+                <option value="" disabled>Neden seç</option>
+                {REPORT_CATEGORY_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </SelectInput>
+            </FormField>
+            <FormField
+              label="Açıklama (isteğe bağlı)"
+              hint="Açıklama yazarsan 10–1000 karakter arasında olmalıdır."
+            >
+              <TextArea name="details" rows={4} minLength={10} maxLength={1000} />
+            </FormField>
+            <button type="submit" className={buttonStyles.secondary}>Şikâyeti gönder</button>
+          </form>
+
+          <div className="border-t border-ink/10 pt-5">
+            <h2 className="font-display text-2xl text-ink">Kullanıcıyı engelle</h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              Engelleme aranızdaki açık iletişimi kapatır ve birbirinizi keşifte görmenizi önler.
+              Karşı tarafa “engellendin” bildirimi gönderilmez.
+            </p>
+            <form action={blockUserAction} className="mt-4">
+              <input type="hidden" name="targetUserId" value={details.other_user_id} />
+              <button
+                type="submit"
+                className="rounded-full border border-ember px-5 py-2.5 text-sm font-semibold text-ember hover:bg-ember-soft"
+              >
+                Kullanıcıyı engelle
+              </button>
+            </form>
+          </div>
+        </div>
+      </details>
 
       {canMessage ? (
         <form action={sendConversationMessageAction} className="mt-5 rounded-[2rem] border border-ink/10 bg-paper p-5 sm:p-6">

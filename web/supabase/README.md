@@ -1,4 +1,4 @@
-# Supabase Faz 1–3
+# Supabase Faz 1–4
 
 Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulanır.
 
@@ -15,7 +15,8 @@ Migrationlar sıralıdır ve mevcut Gönül Pusulası Supabase projesine uygulan
    - `migrations/0007_phase3_lifecycle_and_cooldown.sql`
    - `migrations/0008_phase3_pair_history_limits.sql`
    - `migrations/0009_phase3_active_inactivity.sql`
-   Daha önce `0001`–`0008` uygulandıysa yalnızca `0009` dosyasını çalıştır.
+   - `migrations/0010_phase4_user_safety.sql`
+   Daha önce `0001`–`0009` uygulandıysa yalnızca `0010` dosyasını çalıştır.
 3. Hata olursa aynı sorguyu tekrar çalıştırma; transaction geri alınmış olur. Hata metnini inceleyip migrationı düzelt.
 
 ## Yerel CLI bulunduğunda
@@ -43,3 +44,5 @@ veritabanı korumalarını doğrular.
 `tests/database/0009_phase3_active_inactivity.test.sql` aktif tanışmada üç günlük kontrol
 hatırlatmasını, beş günlük sessizlik sonlandırmasını, katılımcı yetkisini, beklemeyi ve denetim
 kaydını doğrular.
+`tests/database/0010_phase4_user_safety.test.sql` engelleme ve şikâyet RLS sınırlarını,
+engellenen çiftin keşif/başvuru/görüşme/mesaj kilitlerini ve denetim kayıtlarını doğrular.
