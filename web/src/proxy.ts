@@ -21,6 +21,7 @@ export const config = {
     "/kapi-sorularim/:path*",
     "/tanisma-talebi/:path*",
     "/talepler/:path*",
+    "/gorusmeler/:path*",
     "/auth/:path*",
   ],
 };

@@ -27,6 +27,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link href="/talepler" className="font-medium text-ink-soft hover:text-ink">
               Başvurular
             </Link>
+            <Link href="/gorusmeler" className="font-medium text-ink-soft hover:text-ink">
+              Görüşmeler
+            </Link>
             <Link href="/profil" className="font-medium text-ink-soft hover:text-ink">
               Profili düzenle
             </Link>

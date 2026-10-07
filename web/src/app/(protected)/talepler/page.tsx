@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { respondToIntroductionRequestAction } from "@/app/actions/introductions";
 import { MessageBanner } from "@/components/form-controls";
@@ -93,9 +94,17 @@ export default async function RequestsPage({
               </div>
 
               {request.status === "accepted" && request.pre_meeting_expires_at ? (
-                <p className="mt-5 rounded-xl border border-moss/25 bg-moss/10 px-4 py-3 text-sm text-moss">
-                  Ön görüşme başladı. Süre sonu: {formatDate(request.pre_meeting_expires_at)}
-                </p>
+                <div className="mt-5 rounded-xl border border-moss/25 bg-moss/10 px-4 py-3 text-sm text-moss">
+                  <p>Ön görüşme başladı. Süre sonu: {formatDate(request.pre_meeting_expires_at)}</p>
+                  {request.conversation_id ? (
+                    <Link
+                      href={`/gorusmeler/${request.conversation_id}`}
+                      className="mt-3 inline-flex font-semibold underline underline-offset-4"
+                    >
+                      Görüşmeye git
+                    </Link>
+                  ) : null}
+                </div>
               ) : null}
 
               {request.status === "pending" ? (

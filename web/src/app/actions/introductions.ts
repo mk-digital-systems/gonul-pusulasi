@@ -85,7 +85,7 @@ export async function respondToIntroductionRequestAction(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("respond_to_introduction_request", {
+  const { data, error } = await supabase.rpc("respond_to_introduction_request", {
     p_request_id: parsed.data.requestId,
     p_action: parsed.data.action,
   });
@@ -96,10 +96,14 @@ export async function respondToIntroductionRequestAction(formData: FormData) {
 
   revalidatePath("/talepler");
   revalidatePath("/kesfet");
+  revalidatePath("/gorusmeler");
   const notice = parsed.data.action === "accept"
     ? "Başvuruyu kabul ettiniz. 96 saatlik ön görüşme başladı."
     : parsed.data.action === "decline"
       ? "Başvuruyu nazikçe reddettiniz."
       : "Başvurunuzu iptal ettiniz.";
+  if (parsed.data.action === "accept" && typeof data === "string") {
+    redirect(message(`/gorusmeler/${data}`, "bildirim", notice));
+  }
   redirect(message("/talepler", "bildirim", notice));
 }
