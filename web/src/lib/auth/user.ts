@@ -13,6 +13,11 @@ export async function getCurrentUser() {
 
 export async function requireUser() {
   const user = await getCurrentUser();
-  if (!user) redirect("/giris?bildirim=Oturumunuz sona erdi. Lütfen yeniden giriş yapın.");
+  if (!user) {
+    const params = new URLSearchParams({
+      bildirim: "Oturumunuz sona erdi. Lütfen yeniden giriş yapın.",
+    });
+    redirect(`/giris?${params.toString()}`);
+  }
   return user;
 }
