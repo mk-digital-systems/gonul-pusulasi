@@ -14,7 +14,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <CompassMark className="h-8 w-8" />
             <span className="font-script text-[1.7rem] leading-none">{SITE.name}</span>
           </Link>
-          <nav className="flex items-center gap-4 text-sm" aria-label="Hesap menüsü">
+          <nav className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm" aria-label="Hesap menüsü">
+            <Link href="/kesfet" className="font-medium text-ink-soft hover:text-ink">
+              Keşfet
+            </Link>
+            <Link href="/uyum" className="font-medium text-ink-soft hover:text-ink">
+              İlişki Pusulan
+            </Link>
             <Link href="/profil" className="font-medium text-ink-soft hover:text-ink">
               Profili düzenle
             </Link>

@@ -38,7 +38,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     <section>
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember">Hesabım</p>
       <h1 className="mt-3 font-display text-4xl text-ink">Merhaba, {profile.display_name}.</h1>
-      <p className="mt-4 leading-relaxed text-ink-soft">Faz 1 profilin hazır. Keşif ve tanışma özellikleri sonraki fazlarda eklenecek.</p>
+      <p className="mt-4 leading-relaxed text-ink-soft">
+        Temel profilin hazır. İlişki Pusulanı tamamlayarak karşılıklı yaş ve uyum
+        tercihlerine göre adaylarını keşfedebilirsin.
+      </p>
       <div className="mt-8"><MessageBanner error={hata} notice={bildirim} /></div>
 
       <dl className="mt-6 grid gap-4 rounded-[2rem] border border-ink/10 bg-paper p-6 sm:grid-cols-2 sm:p-8">
@@ -60,7 +63,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
       {account.status !== "deletion_requested" && account.status !== "suspended" ? (
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/profil" className={buttonStyles.primary}>Profili düzenle</Link>
+          {account.status === "active" ? (
+            <Link href="/uyum" className={buttonStyles.primary}>İlişki Pusulanı doldur</Link>
+          ) : null}
+          <Link href="/profil" className={buttonStyles.secondary}>Profili düzenle</Link>
           {account.status === "active" ? (
             <form action={pauseAccountAction}><button type="submit" className={buttonStyles.secondary}>Hesabı duraklat</button></form>
           ) : (

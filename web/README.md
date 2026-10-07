@@ -1,12 +1,12 @@
 # Gönül Pusulası Web
 
-Next.js 16 tabanlı tanıtım sitesi ve Faz 1 hesap/onboarding uygulaması.
+Next.js 16 tabanlı tanıtım sitesi; Faz 1 hesap/onboarding ve Faz 2 uyum/keşif uygulaması.
 
 ## Yerel geliştirme
 
 1. `.env.example` dosyasını `.env.local` olarak kopyala.
 2. Mevcut Supabase projesinin Project URL ve publishable key değerlerini gir.
-3. `supabase/migrations/0001_phase1_foundation.sql` migrationını Supabase SQL Editor'da çalıştır.
+3. `supabase/migrations/0001_phase1_foundation.sql` ve ardından `supabase/migrations/0002_phase2_compatibility.sql` migrationlarını Supabase SQL Editor'da sırayla çalıştır.
 4. Supabase Authentication URL ayarlarına şu adresleri ekle:
    - `http://localhost:3000/auth/callback/signup`
    - `http://localhost:3000/auth/callback/recovery`

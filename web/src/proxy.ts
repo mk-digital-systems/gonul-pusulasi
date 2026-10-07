@@ -16,6 +16,8 @@ export const config = {
     "/onboarding/:path*",
     "/hesabim/:path*",
     "/profil/:path*",
+    "/uyum/:path*",
+    "/kesfet/:path*",
     "/auth/:path*",
   ],
 };
