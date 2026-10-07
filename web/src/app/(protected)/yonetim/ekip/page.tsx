@@ -40,8 +40,8 @@ export default async function ModerationStaffPage({
       </p>
       <h1 className="mt-3 font-display text-4xl text-ink">Moderasyon ekibi</h1>
       <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">
-        Yetki yalnızca mevcut Supabase Auth kullanıcı UUID’sine verilir. Aktif olmayan hesaba
-        yetki atanamaz ve admin kendi admin rolünü kaldıramaz.
+        Yetki yalnızca mevcut Supabase Auth kullanıcı UUID’sine verilir. Normal üye
+        profili tamamlanmış hesap moderatör yapılamaz; admin kimliği sabittir.
       </p>
 
       <div className="mt-8">
@@ -72,7 +72,6 @@ export default async function ModerationStaffPage({
           <FormField label="Rol">
             <SelectInput name="role" defaultValue="moderator">
               <option value="moderator">Moderatör</option>
-              <option value="admin">Admin</option>
             </SelectInput>
           </FormField>
           <FormField label="Durum">
@@ -119,9 +118,8 @@ export default async function ModerationStaffPage({
                 <form action={manageModerationStaffAction} className="mt-5 grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
                   <input type="hidden" name="userId" value={member.user_id} />
                   <FormField label="Rol">
-                    <SelectInput name="role" defaultValue={member.role}>
+                    <SelectInput name="role" defaultValue="moderator">
                       <option value="moderator">Moderatör</option>
-                      <option value="admin">Admin</option>
                     </SelectInput>
                   </FormField>
                   <FormField label="Durum">

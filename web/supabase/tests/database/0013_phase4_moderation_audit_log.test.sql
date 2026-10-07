@@ -24,30 +24,31 @@ insert into auth.users (
   email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
   created_at, updated_at
 ) values
-  ('00000000-0000-0000-0000-000000000000', 'd0000000-0000-0000-0000-000000000011', 'authenticated', 'authenticated', 'audit-admin@example.test', '', now(), '{}', '{}', now(), now()),
+  ('00000000-0000-0000-0000-000000000000', 'ae6db6cf-7852-4fef-9fa0-fba3a6afac55', 'authenticated', 'authenticated', 'audit-admin@example.test', '', now(), '{}', '{}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', 'd0000000-0000-0000-0000-000000000012', 'authenticated', 'authenticated', 'audit-moderator@example.test', '', now(), '{}', '{}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', 'd0000000-0000-0000-0000-000000000013', 'authenticated', 'authenticated', 'audit-target@example.test', '', now(), '{}', '{}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', 'd0000000-0000-0000-0000-000000000014', 'authenticated', 'authenticated', 'audit-regular@example.test', '', now(), '{}', '{}', now(), now());
 
 update public.profiles
 set display_name = case user_id
-  when 'd0000000-0000-0000-0000-000000000011' then 'Denetim Admini'
+  when 'ae6db6cf-7852-4fef-9fa0-fba3a6afac55' then 'Denetim Admini'
   when 'd0000000-0000-0000-0000-000000000012' then 'Denetim Moderatörü'
   when 'd0000000-0000-0000-0000-000000000013' then 'Denetim Hedefi'
   else 'Normal Kullanıcı'
 end
-where user_id::text like 'd0000000-%';
+where user_id::text like 'd0000000-%'
+   or user_id = 'ae6db6cf-7852-4fef-9fa0-fba3a6afac55';
 
 insert into public.moderation_staff (user_id, role, created_by_user_id) values
   (
-    'd0000000-0000-0000-0000-000000000011',
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55',
     'admin',
-    'd0000000-0000-0000-0000-000000000011'
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55'
   ),
   (
     'd0000000-0000-0000-0000-000000000012',
     'moderator',
-    'd0000000-0000-0000-0000-000000000011'
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55'
   );
 
 insert into public.moderation_actions (
@@ -62,7 +63,7 @@ insert into public.moderation_actions (
 ) values
   (
     'd0000000-0000-4000-8000-000000000021',
-    'd0000000-0000-0000-0000-000000000011',
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55',
     'd0000000-0000-0000-0000-000000000013',
     'account_suspended',
     'active',
@@ -72,7 +73,7 @@ insert into public.moderation_actions (
   ),
   (
     'd0000000-0000-4000-8000-000000000022',
-    'd0000000-0000-0000-0000-000000000011',
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55',
     'd0000000-0000-0000-0000-000000000013',
     'account_restored',
     'suspended',
@@ -98,7 +99,7 @@ select throws_ok(
   'moderatör hassas yaptırım geçmişini göremez'
 );
 
-select set_config('request.jwt.claims', '{"sub":"d0000000-0000-0000-0000-000000000011","role":"authenticated"}', true);
+select set_config('request.jwt.claims', '{"sub":"ae6db6cf-7852-4fef-9fa0-fba3a6afac55","role":"authenticated"}', true);
 select is(
   (select count(*)::integer from public.get_moderation_action_log(100)),
   2,

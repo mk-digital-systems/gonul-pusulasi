@@ -2,9 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import sharp from "sharp";
 import { requireUser } from "@/lib/auth/user";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { onboardingSchema, profileUpdateSchema } from "@/lib/validation/profile";
+import { validateProfilePhotoFile } from "@/lib/validation/profile-photo";
 
 function value(formData: FormData, name: string) {
   const item = formData.get(name);
@@ -78,6 +81,124 @@ export async function updateProfileAction(formData: FormData) {
   revalidatePath("/hesabim");
   revalidatePath("/profil");
   redirect(message("/profil", "bildirim", "Profiliniz güncellendi."));
+}
+
+export async function uploadProfilePhotoAction(formData: FormData) {
+  const user = await requireUser();
+  const file = formData.get("photo");
+
+  if (!(file instanceof File)) {
+    redirect(message("/profil", "hata", "Yüklenecek fotoğrafı seçin."));
+  }
+
+  const validationError = validateProfilePhotoFile(file);
+  if (validationError) redirect(message("/profil", "hata", validationError));
+
+  let processed: { data: Buffer; info: { size: number; width: number; height: number } };
+  try {
+    const input = Buffer.from(await file.arrayBuffer());
+    const metadata = await sharp(input, {
+      failOn: "error",
+      limitInputPixels: 40_000_000,
+    }).metadata();
+
+    if (
+      !metadata.format ||
+      !["jpeg", "png", "webp"].includes(metadata.format) ||
+      (metadata.pages ?? 1) !== 1 ||
+      !metadata.width ||
+      !metadata.height ||
+      Math.min(metadata.width, metadata.height) < 400
+    ) {
+      redirect(message("/profil", "hata", "Fotoğraf en az 400×400 piksel ve tek kare olmalıdır."));
+    }
+
+    processed = await sharp(input, {
+      failOn: "error",
+      limitInputPixels: 40_000_000,
+    })
+      .autoOrient()
+      .resize(1024, 1024, { fit: "cover", position: "centre" })
+      .webp({ quality: 82, effort: 4 })
+      .toBuffer({ resolveWithObject: true });
+  } catch (error) {
+    if (error && typeof error === "object" && "digest" in error) throw error;
+    redirect(message("/profil", "hata", "Fotoğraf güvenli biçimde işlenemedi."));
+  }
+
+  if (processed.info.size > 2 * 1024 * 1024) {
+    redirect(message("/profil", "hata", "İşlenmiş fotoğraf boyutu sınırı aşıyor."));
+  }
+
+  const supabase = await createClient();
+  const { data: oldPhoto } = await supabase
+    .from("profile_photos")
+    .select("object_path")
+    .maybeSingle();
+
+  let admin;
+  try {
+    admin = createAdminClient();
+  } catch {
+    redirect(message("/profil", "hata", "Fotoğraf servisi henüz yapılandırılmadı."));
+  }
+
+  const objectPath = `${user.id}/${crypto.randomUUID()}.webp`;
+  const { error: uploadError } = await admin.storage
+    .from("profile-photos")
+    .upload(objectPath, processed.data, {
+      contentType: "image/webp",
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (uploadError) {
+    redirect(message("/profil", "hata", "Fotoğraf özel depolama alanına yüklenemedi."));
+  }
+
+  const { error: submitError } = await supabase.rpc("submit_my_profile_photo", {
+    p_object_path: objectPath,
+    p_byte_size: processed.info.size,
+    p_width: processed.info.width,
+    p_height: processed.info.height,
+  });
+
+  if (submitError) {
+    await admin.storage.from("profile-photos").remove([objectPath]);
+    redirect(message("/profil", "hata", "Fotoğraf moderasyon kuyruğuna gönderilemedi."));
+  }
+
+  if (oldPhoto?.object_path && oldPhoto.object_path !== objectPath) {
+    await admin.storage.from("profile-photos").remove([oldPhoto.object_path]);
+  }
+
+  revalidatePath("/profil");
+  revalidatePath("/kesfet");
+  revalidatePath("/yonetim/fotograflar");
+  redirect(message("/profil", "bildirim", "Fotoğraf yüklendi ve moderasyon incelemesine gönderildi."));
+}
+
+export async function deleteProfilePhotoAction() {
+  await requireUser();
+  const supabase = await createClient();
+  const { data: objectPath, error } = await supabase.rpc("remove_my_profile_photo");
+
+  if (error) redirect(message("/profil", "hata", "Fotoğraf kaydı silinemedi."));
+
+  if (typeof objectPath === "string" && objectPath) {
+    try {
+      const admin = createAdminClient();
+      await admin.storage.from("profile-photos").remove([objectPath]);
+    } catch {
+      // Veritabanı kaydı silindiği için nesne artık hiçbir kullanıcıya sunulamaz.
+      // Depolama temizliği teknik bakım sırasında güvenle tekrar edilebilir.
+    }
+  }
+
+  revalidatePath("/profil");
+  revalidatePath("/kesfet");
+  revalidatePath("/yonetim/fotograflar");
+  redirect(message("/profil", "bildirim", "Profil fotoğrafı kaldırıldı."));
 }
 
 export async function pauseAccountAction() {

@@ -22,6 +22,9 @@ export const config = {
     "/tanisma-talebi/:path*",
     "/talepler/:path*",
     "/gorusmeler/:path*",
+    "/engellenenler/:path*",
+    "/yonetim/:path*",
+    "/api/profil-fotografi/:path*",
     "/auth/:path*",
   ],
 };

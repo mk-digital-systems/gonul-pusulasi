@@ -41,6 +41,6 @@ export const restoreAccountSchema = z.object({
 
 export const manageStaffSchema = z.object({
   userId: z.string().uuid("Geçerli bir Auth kullanıcı UUID'si girin."),
-  role: z.enum(["moderator", "admin"]),
+  role: z.literal("moderator"),
   isActive: z.enum(["true", "false"]).transform((value) => value === "true"),
 });

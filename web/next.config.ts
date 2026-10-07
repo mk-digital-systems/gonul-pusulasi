@@ -10,6 +10,11 @@ const ALIAS_HOSTS = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "9mb",
+    },
+  },
   async headers() {
     return [
       {

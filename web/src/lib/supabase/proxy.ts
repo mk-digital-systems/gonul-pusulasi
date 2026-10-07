@@ -32,5 +32,38 @@ export async function updateSession(request: NextRequest) {
   // getClaims validates the access token and refreshes an expired session.
   // Authorization is still repeated inside pages, DAL functions and actions.
   await supabase.auth.getClaims();
+
+  const memberOnlyPrefixes = [
+    "/onboarding",
+    "/hesabim",
+    "/profil",
+    "/uyum",
+    "/kesfet",
+    "/kapi-sorularim",
+    "/tanisma-talebi",
+    "/talepler",
+    "/gorusmeler",
+    "/engellenenler",
+  ];
+  const isMemberOnlyPath = memberOnlyPrefixes.some(
+    (prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`),
+  );
+
+  if (isMemberOnlyPath) {
+    const { data: staffRole } = await supabase.rpc("get_my_staff_role");
+
+    if (staffRole === "admin" || staffRole === "moderator") {
+      const redirectResponse = NextResponse.redirect(
+        new URL("/yonetim/sikayetler", request.url),
+      );
+
+      for (const cookie of response.cookies.getAll()) {
+        redirectResponse.cookies.set(cookie);
+      }
+
+      return redirectResponse;
+    }
+  }
+
   return response;
 }

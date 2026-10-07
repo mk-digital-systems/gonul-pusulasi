@@ -35,30 +35,31 @@ insert into auth.users (
   email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
   created_at, updated_at
 ) values
-  ('00000000-0000-0000-0000-000000000000', 'e0000000-0000-0000-0000-000000000011', 'authenticated', 'authenticated', 'staff-admin@example.test', '', now(), '{}', '{}', now(), now()),
+  ('00000000-0000-0000-0000-000000000000', 'ae6db6cf-7852-4fef-9fa0-fba3a6afac55', 'authenticated', 'authenticated', 'staff-admin@example.test', '', now(), '{}', '{}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', 'e0000000-0000-0000-0000-000000000012', 'authenticated', 'authenticated', 'staff-moderator@example.test', '', now(), '{}', '{}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', 'e0000000-0000-0000-0000-000000000013', 'authenticated', 'authenticated', 'staff-candidate@example.test', '', now(), '{}', '{}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', 'e0000000-0000-0000-0000-000000000014', 'authenticated', 'authenticated', 'staff-regular@example.test', '', now(), '{}', '{}', now(), now());
 
 update public.profiles
 set display_name = case user_id
-  when 'e0000000-0000-0000-0000-000000000011' then 'Ekip Admini'
+  when 'ae6db6cf-7852-4fef-9fa0-fba3a6afac55' then 'Ekip Admini'
   when 'e0000000-0000-0000-0000-000000000012' then 'Mevcut Moderatör'
   when 'e0000000-0000-0000-0000-000000000013' then 'Yeni Personel'
   else 'Normal Kullanıcı'
 end
-where user_id::text like 'e0000000-%';
+where user_id::text like 'e0000000-%'
+   or user_id = 'ae6db6cf-7852-4fef-9fa0-fba3a6afac55';
 
 insert into public.moderation_staff (user_id, role, created_by_user_id) values
   (
-    'e0000000-0000-0000-0000-000000000011',
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55',
     'admin',
-    'e0000000-0000-0000-0000-000000000011'
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55'
   ),
   (
     'e0000000-0000-0000-0000-000000000012',
     'moderator',
-    'e0000000-0000-0000-0000-000000000011'
+    'ae6db6cf-7852-4fef-9fa0-fba3a6afac55'
   );
 
 set local role authenticated;
@@ -84,7 +85,7 @@ select throws_ok(
   'moderatör personel yetkisi veremez'
 );
 
-select set_config('request.jwt.claims', '{"sub":"e0000000-0000-0000-0000-000000000011","role":"authenticated"}', true);
+select set_config('request.jwt.claims', '{"sub":"ae6db6cf-7852-4fef-9fa0-fba3a6afac55","role":"authenticated"}', true);
 select is(
   (select count(*)::integer from public.get_moderation_staff()),
   2,
@@ -112,13 +113,13 @@ select is(
 select throws_ok(
   $$
     select public.manage_moderation_staff(
-      'e0000000-0000-0000-0000-000000000011',
+      'ae6db6cf-7852-4fef-9fa0-fba3a6afac55',
       'moderator',
       true
     )
   $$,
-  '42501',
-  'Admin kendi etkin admin yetkisini kaldıramaz.',
+  '23514',
+  'Yalnızca ayrı bir moderatör hesabı yönetilebilir.',
   'admin kendi rolünü düşüremez'
 );
 select throws_ok(
