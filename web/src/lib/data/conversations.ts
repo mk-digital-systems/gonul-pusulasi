@@ -49,6 +49,13 @@ export type MatchCooldown = {
   reason: "active_match_ended";
 };
 
+export type ConversationInactivity = {
+  conversation_id: string;
+  last_activity_at: string;
+  check_in_due: boolean;
+  inactivity_action_available: boolean;
+};
+
 export async function getMyMatchCooldown() {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_my_match_cooldown");
@@ -84,7 +91,7 @@ export async function getConversation(conversationId: string) {
   const details = (detailsResult.data?.[0] ?? null) as ConversationDetails | null;
   if (!details) return null;
 
-  const [messagesResult, progressResult] = await Promise.all([
+  const [messagesResult, progressResult, inactivityResult] = await Promise.all([
     supabase.rpc("get_conversation_messages", {
       p_conversation_id: conversationId,
       p_limit: 100,
@@ -92,15 +99,19 @@ export async function getConversation(conversationId: string) {
     supabase.rpc("get_conversation_progress", {
       p_conversation_id: conversationId,
     }),
+    supabase.rpc("get_conversation_inactivity", {
+      p_conversation_id: conversationId,
+    }),
   ]);
 
-  if (messagesResult.error || progressResult.error) {
-    throw new Error("Görüşme mesajları veya devam durumu yüklenemedi.");
+  if (messagesResult.error || progressResult.error || inactivityResult.error) {
+    throw new Error("Görüşme mesajları, devam veya sessizlik durumu yüklenemedi. 0009 migrationını kontrol edin.");
   }
 
   return {
     details,
     messages: (messagesResult.data ?? []) as ConversationMessage[],
     progress: (progressResult.data?.[0] ?? null) as ConversationProgress | null,
+    inactivity: (inactivityResult.data?.[0] ?? null) as ConversationInactivity | null,
   };
 }

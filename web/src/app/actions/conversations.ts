@@ -119,3 +119,33 @@ export async function endActiveConversationAction(formData: FormData) {
   revalidatePath(`/gorusmeler/${parsed.data.conversationId}`);
   redirect("/gorusmeler?bildirim=Aktif+tan%C4%B1%C5%9Fma+sonland%C4%B1r%C4%B1ld%C4%B1.+24+saatlik+bekleme+ba%C5%9Flad%C4%B1.");
 }
+
+export async function endInactiveConversationAction(formData: FormData) {
+  await requireUser();
+  const parsed = endActiveConversationSchema.safeParse({
+    conversationId: value(formData, "conversationId"),
+  });
+
+  if (!parsed.success) {
+    redirect("/gorusmeler?hata=G%C3%B6r%C3%BC%C5%9Fme+bilgisi+ge%C3%A7ersiz.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("end_inactive_conversation", {
+    p_conversation_id: parsed.data.conversationId,
+  });
+
+  if (error) {
+    redirect(conversationPath(
+      parsed.data.conversationId,
+      "hata",
+      "Kayboldu seçeneği uygulanamadı. Son mesajın üzerinden 5 gün geçtiğini ve görüşmenin hâlâ aktif olduğunu kontrol edin.",
+    ));
+  }
+
+  revalidatePath("/kesfet");
+  revalidatePath("/talepler");
+  revalidatePath("/gorusmeler");
+  revalidatePath(`/gorusmeler/${parsed.data.conversationId}`);
+  redirect("/gorusmeler?bildirim=Tan%C4%B1%C5%9Fma+sessizlik+nedeniyle+kapat%C4%B1ld%C4%B1.+24+saatlik+bekleme+ba%C5%9Flad%C4%B1.");
+}

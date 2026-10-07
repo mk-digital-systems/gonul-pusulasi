@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import {
   confirmConversationProgressAction,
   endActiveConversationAction,
+  endInactiveConversationAction,
   sendConversationMessageAction,
 } from "@/app/actions/conversations";
 import { MessageBanner, TextArea } from "@/components/form-controls";
@@ -42,7 +43,7 @@ export default async function ConversationPage({
   const conversation = await getConversation(conversationId);
   if (!conversation) notFound();
 
-  const { details, messages, progress } = conversation;
+  const { details, messages, progress, inactivity } = conversation;
   const canMessage = details.conversation_status === "pre_meeting"
     || details.conversation_status === "active";
   const isActive = details.conversation_status === "active";
@@ -93,6 +94,35 @@ export default async function ConversationPage({
       <div className="mt-6">
         <MessageBanner error={hata} notice={bildirim} />
       </div>
+
+      {isActive && inactivity?.check_in_due ? (
+        <div className="mt-5 rounded-[2rem] border border-brass/30 bg-brass/10 p-5 sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ember-deep">
+            İletişim kontrolü
+          </p>
+          <h2 className="mt-2 font-display text-2xl text-ink">
+            Bir süredir yeni mesaj yok.
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+            Son etkinlik: {formatDate(inactivity.last_activity_at)}. İletişimin sürüp sürmediğini
+            sakin ve açık bir mesajla kontrol edebilirsin.
+          </p>
+          {inactivity.inactivity_action_available ? (
+            <div className="mt-4 border-t border-brass/20 pt-4">
+              <p className="text-sm leading-relaxed text-ink-soft">
+                Beş günlük sessizlik tamamlandı. “Kayboldu” seçeneği görüşmeyi kapatır ve iki taraf
+                için 24 saatlik beklemeyi başlatır; otomatik şikâyet veya yaptırım oluşturmaz.
+              </p>
+              <form action={endInactiveConversationAction} className="mt-4">
+                <input type="hidden" name="conversationId" value={details.conversation_id} />
+                <button type="submit" className={buttonStyles.secondary}>
+                  Kayboldu olarak kapat
+                </button>
+              </form>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="mt-6 space-y-3 rounded-[2rem] border border-ink/10 bg-paper p-4 sm:p-6">
         {messages.length === 0 ? (
